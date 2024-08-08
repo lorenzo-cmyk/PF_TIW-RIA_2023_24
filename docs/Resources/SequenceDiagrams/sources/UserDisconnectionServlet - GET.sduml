@@ -1,5 +1,0 @@
-title UserDisconnectionServlet - GET
-
-Client->UserDisconnectionServlet: GET /logout
-UserDisconnectionServlet->HttpSession: invalidate()
-UserDisconnectionServlet->Client: sendRedirect("/login")
