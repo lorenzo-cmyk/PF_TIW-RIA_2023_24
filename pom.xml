@@ -6,9 +6,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>it.polimi.tiw</groupId>
-    <artifactId>PF_TIW-HTML_2023_24</artifactId>
+    <artifactId>PF_TIW-RIA_2023_24</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>PF_TIW-HTML_2023_24</name>
+    <name>PF_TIW-RIA_2023_24</name>
     <packaging>war</packaging>
 
     <properties>
