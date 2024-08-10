@@ -25,7 +25,7 @@ import java.sql.SQLException;
 /**
  * This servlet is used to handle the registration of a new user.
  */
-@WebServlet(name = "UserRegistrationServlet", value = "/api/register")
+@WebServlet(name = "UserRegistrationServlet", value = "/api/auth/register")
 public class UserRegistrationServlet extends HttpServlet {
     private Connection servletConnection;
 
@@ -50,10 +50,6 @@ public class UserRegistrationServlet extends HttpServlet {
      */
     public void destroy() {
         DatabaseConnectionBuilder.closeConnection(servletConnection);
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        doPost(req, resp);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -83,7 +79,7 @@ public class UserRegistrationServlet extends HttpServlet {
             userDAO.registerUser(newUser);
 
             // If everything went well, we reply with a success message
-            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setStatus(HttpServletResponse.SC_CREATED);
         } catch (PasswordMismatchException | InvalidArgumentException | RegistrationException e) {
             try {
                 ErrorDTO errorDTO = new ErrorDTO(Validators.retrieveErrorMessageFromErrorCode(e.getErrorCode()));

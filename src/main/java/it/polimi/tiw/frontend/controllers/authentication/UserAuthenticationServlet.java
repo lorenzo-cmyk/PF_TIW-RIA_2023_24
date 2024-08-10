@@ -24,7 +24,7 @@ import java.sql.SQLException;
 /**
  * This servlet is used to handle the authentication of a user.
  */
-@WebServlet(name = "UserAuthenticationServlet", value = "/api/login")
+@WebServlet(name = "UserAuthenticationServlet", value = "/api/auth/login")
 public class UserAuthenticationServlet extends HttpServlet {
     private Connection servletConnection;
 
@@ -49,10 +49,6 @@ public class UserAuthenticationServlet extends HttpServlet {
      */
     public void destroy() {
         DatabaseConnectionBuilder.closeConnection(servletConnection);
-    }
-
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        doPost(req, resp);
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
