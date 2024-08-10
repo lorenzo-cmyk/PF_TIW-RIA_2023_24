@@ -77,11 +77,12 @@ public class UserAuthenticationServlet extends HttpServlet {
                 ErrorDTO errorDTO = new ErrorDTO(Validators.retrieveErrorMessageFromErrorCode(e.getErrorCode()));
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             } catch (UnknownErrorCodeException ignored) {
-                ErrorDTO errorDTO = new ErrorDTO("Unable to register user due to an unknown error.");
+                ErrorDTO errorDTO = new ErrorDTO("Unable to authenticate the user due to an unknown error.");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } catch (SQLException e) {
-            ErrorDTO errorDTO = new ErrorDTO("Unable to register user due to a critical error in the database.");
+            ErrorDTO errorDTO = new ErrorDTO("Unable to authenticate the user due to " +
+                    "a critical error in the database.");
             sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } catch (JsonIOException | JsonSyntaxException e) {
             ErrorDTO errorDTO = new ErrorDTO("Malformed request. Are you trying to hijack the request?");
