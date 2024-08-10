@@ -4,6 +4,7 @@ package it.polimi.tiw.frontend.messages.outbound.generic;
  * Data Transfer Object (DTO) for error messages.
  * This class is used to encapsulate error messages to be sent in responses.
  */
+@SuppressWarnings("ClassCanBeRecord")
 public class ErrorDTO {
     private final String error;
 

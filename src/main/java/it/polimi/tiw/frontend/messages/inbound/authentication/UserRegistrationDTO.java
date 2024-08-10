@@ -22,7 +22,8 @@ public class UserRegistrationDTO {
      * @param email                the email address of the user
      * @throws FailedInputParsingException if any of the input strings are invalid
      */
-    public UserRegistrationDTO(String username, String password, String passwordConfirmation, String email) throws FailedInputParsingException {
+    public UserRegistrationDTO(String username, String password, String passwordConfirmation, String email)
+            throws FailedInputParsingException {
         this.username = Validators.parseString(username);
         this.password = Validators.parseString(password);
         this.passwordConfirmation = Validators.parseString(passwordConfirmation);
