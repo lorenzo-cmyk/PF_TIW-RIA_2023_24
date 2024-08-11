@@ -55,6 +55,14 @@ public class FilterBadRequests implements Filter {
             return;
         }
 
+        // If the endpoint does not require authentication and the user is authenticated, return a 403 error
+        if (!retrievedEndpoint.needsAuthentication() && isUserAuthenticated(httpRequest)) {
+            ErrorDTO errorDTO = new ErrorDTO("You are already authenticated. " +
+                    "Please log out and try again.");
+            sendErrorDTO(httpResponse, errorDTO, HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
         // Continue with the filter chain
         filterChain.doFilter(servletRequest, servletResponse);
     }
