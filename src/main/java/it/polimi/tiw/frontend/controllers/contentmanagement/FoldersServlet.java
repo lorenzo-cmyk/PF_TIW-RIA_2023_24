@@ -1,6 +1,7 @@
 package it.polimi.tiw.frontend.controllers.contentmanagement;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import it.polimi.tiw.backend.beans.Folder;
 import it.polimi.tiw.backend.beans.User;
@@ -110,6 +111,9 @@ public class FoldersServlet extends HttpServlet {
                 ErrorDTO errorDTO = new ErrorDTO("Unable to create the new folder due to an unknown error.");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
+        } catch (JsonIOException | JsonSyntaxException e) {
+            ErrorDTO errorDTO = new ErrorDTO("Malformed request. Are you trying to hijack the request?");
+            sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -141,6 +145,5 @@ public class FoldersServlet extends HttpServlet {
         for (TreeNode<Folder> subfolder : folderTree.getNodeChildren()) {
             buildDTOFromFolderTree(subfolder, subfolders);
         }
-
     }
 }
