@@ -69,27 +69,27 @@ public enum EndpointEnumeration {
     }
 
     /**
-     * Checks if the endpoint requires authentication.
-     *
-     * @return true if the endpoint requires authentication, false otherwise
-     */
-    public Boolean needsAuthentication() {
-        return needsAuthentication;
-    }
-
-    /**
      * Retrieves the corresponding EndpointEnumeration based on the provided URL and HTTP method.
      *
      * @param URL        the URL of the endpoint
      * @param HTTPMethod the HTTP method of the endpoint
      * @return the matching EndpointEnumeration, or null if no match is found
      */
-    public EndpointEnumeration retrieveEndpoint(String URL, String HTTPMethod) {
+    public static EndpointEnumeration retrieveEndpoint(String URL, String HTTPMethod) {
         for (EndpointEnumeration endpoint : EndpointEnumeration.values()) {
             if (endpoint.URLPattern.matcher(URL).matches() && endpoint.HTTPMethod.equals(HTTPMethod)) {
                 return endpoint;
             }
         }
         return null;
+    }
+
+    /**
+     * Checks if the endpoint requires authentication.
+     *
+     * @return true if the endpoint requires authentication, false otherwise
+     */
+    public Boolean needsAuthentication() {
+        return needsAuthentication;
     }
 }
