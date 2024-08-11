@@ -114,7 +114,7 @@ public class FolderServlet extends HttpServlet {
                 resp.setCharacterEncoding("UTF-8");
                 resp.getWriter().write(folderDetailsJson);
             } catch (FailedInputParsingException e) {
-                ErrorDTO errorDTO = new ErrorDTO("The folder ID is not a valid integer. " +
+                ErrorDTO errorDTO = new ErrorDTO("The folder ID provided is not a valid integer. " +
                         "Are you trying to hijack the request?");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             } catch (SQLException e) {
@@ -123,7 +123,7 @@ public class FolderServlet extends HttpServlet {
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } else {
-            ErrorDTO errorDTO = new ErrorDTO("The folder ID is missing from the request. " +
+            ErrorDTO errorDTO = new ErrorDTO("Malformed request. Check the API endpoint. " +
                     "Are you trying to hijack the request?");
             sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -159,7 +159,7 @@ public class FolderServlet extends HttpServlet {
                 folderDAO.deleteFolder(folderID, ownerID);
                 // If everything went well, we reply with a success message
                 resp.setStatus(HttpServletResponse.SC_OK);
-            } catch (FailedInputParsingException | FolderDeletionException e) {
+            } catch (FolderDeletionException e) {
                 try {
                     ErrorDTO errorDTO = new ErrorDTO(Validators.retrieveErrorMessageFromErrorCode(e.getErrorCode()));
                     sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
@@ -171,9 +171,13 @@ public class FolderServlet extends HttpServlet {
                 ErrorDTO errorDTO = new ErrorDTO("Unable to delete the folder content due to " +
                         "a critical error in the database.");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            } catch (FailedInputParsingException e) {
+                ErrorDTO errorDTO = new ErrorDTO("The folder ID provided is not a valid integer. " +
+                        "Are you trying to hijack the request?");
+                sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             }
         } else {
-            ErrorDTO errorDTO = new ErrorDTO("The folder ID is missing from the request. " +
+            ErrorDTO errorDTO = new ErrorDTO("Malformed request. Check the API endpoint. " +
                     "Are you trying to hijack the request?");
             sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
         }
