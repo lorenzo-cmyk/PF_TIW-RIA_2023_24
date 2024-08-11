@@ -6,9 +6,11 @@ import com.google.gson.GsonBuilder;
 import it.polimi.tiw.backend.beans.Document;
 import it.polimi.tiw.backend.beans.User;
 import it.polimi.tiw.backend.dao.DocumentDAO;
+import it.polimi.tiw.backend.dao.exceptions.DocumentDeletionException;
 import it.polimi.tiw.backend.utilities.DatabaseConnectionBuilder;
 import it.polimi.tiw.backend.utilities.Validators;
 import it.polimi.tiw.backend.utilities.exceptions.FailedInputParsingException;
+import it.polimi.tiw.backend.utilities.exceptions.UnknownErrorCodeException;
 import it.polimi.tiw.frontend.messages.outbound.contentmanagement.DocumentDetailsDTO;
 import it.polimi.tiw.frontend.messages.outbound.generic.ErrorDTO;
 import jakarta.servlet.annotation.WebServlet;
@@ -99,6 +101,56 @@ public class DocumentServlet extends HttpServlet {
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             } catch (SQLException e) {
                 ErrorDTO errorDTO = new ErrorDTO("Unable to retrieve the document due to " +
+                        "a critical error in the database.");
+                sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            ErrorDTO errorDTO = new ErrorDTO("The document ID is missing from the request. " +
+                    "Are you trying to hijack the request?");
+            sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // Get the request URI (the part of the URL after the domain name)
+        String requestURI = req.getRequestURI();
+        // Get the context path (the part of the URL that represents the app)
+        String contextPath = req.getContextPath();
+        // Remove everything before the "/api/documents/" part of the URL
+        String path = requestURI.substring(contextPath.length() + "/api/documents/".length());
+        // Split the path into its parts
+        String[] pathParts = path.split("/");
+
+        // Ensure the URL matches the pattern /api/folders/{folderID}
+        if (pathParts.length == 1) {
+            try {
+                // Get the folderID from the pathInfo and store it in a variable
+                int documentID = Validators.parseInt(pathParts[0]); // Remove the leading "/"
+                // Get the ownerID from the session and store it in a variable
+                int ownerID = ((User) req.getSession().getAttribute("user")).getUserID();
+                // Ensure that the folder I want to delete actually exists and is owned by the user
+                DocumentDAO documentDAO = new DocumentDAO(servletConnection);
+                Document document = documentDAO.getDocumentByID(documentID, ownerID);
+                if (document == null) {
+                    ErrorDTO errorDTO = new ErrorDTO("The document you are asking to delete does not exist or " +
+                            "is not owned by the logged user. Are you trying to hijack the request?");
+                    sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
+                // The folder actually exists and is owned by the user, so I can proceed
+                documentDAO.deleteDocument(documentID, ownerID);
+                // If everything went well, we reply with a success message
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } catch (FailedInputParsingException | DocumentDeletionException e) {
+                try {
+                    ErrorDTO errorDTO = new ErrorDTO(Validators.retrieveErrorMessageFromErrorCode(e.getErrorCode()));
+                    sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
+                } catch (UnknownErrorCodeException ignored) {
+                    ErrorDTO errorDTO = new ErrorDTO("Unable to delete the document due to an unknown error.");
+                    sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+            } catch (SQLException e) {
+                ErrorDTO errorDTO = new ErrorDTO("Unable to delete the document content due to " +
                         "a critical error in the database.");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
