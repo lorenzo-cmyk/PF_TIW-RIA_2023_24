@@ -1,8 +1,8 @@
 package it.polimi.tiw.frontend.controllers.contentmanagement;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import it.polimi.tiw.backend.beans.Document;
 import it.polimi.tiw.backend.beans.Folder;
@@ -102,7 +102,7 @@ public class DocumentServlet extends HttpServlet {
                 resp.setCharacterEncoding("UTF-8");
                 resp.getWriter().write(folderDetailsJson);
             } catch (FailedInputParsingException e) {
-                ErrorDTO errorDTO = new ErrorDTO("The document ID is not a valid integer. " +
+                ErrorDTO errorDTO = new ErrorDTO("The document ID provided is not a valid integer. " +
                         "Are you trying to hijack the request?");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             } catch (SQLException e) {
@@ -111,7 +111,7 @@ public class DocumentServlet extends HttpServlet {
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } else {
-            ErrorDTO errorDTO = new ErrorDTO("The document ID is missing from the request. " +
+            ErrorDTO errorDTO = new ErrorDTO("Malformed request. Check the API endpoint. " +
                     "Are you trying to hijack the request?");
             sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -127,14 +127,14 @@ public class DocumentServlet extends HttpServlet {
         // Split the path into its parts
         String[] pathParts = path.split("/");
 
-        // Ensure the URL matches the pattern /api/folders/{folderID}
+        // Ensure the URL matches the pattern /api/documents/{documentID}
         if (pathParts.length == 1) {
             try {
-                // Get the folderID from the pathInfo and store it in a variable
+                // Get the documentID from the pathInfo and store it in a variable
                 int documentID = Validators.parseInt(pathParts[0]); // Remove the leading "/"
                 // Get the ownerID from the session and store it in a variable
                 int ownerID = ((User) req.getSession().getAttribute("user")).getUserID();
-                // Ensure that the folder I want to delete actually exists and is owned by the user
+                // Ensure that the document I want to delete actually exists and is owned by the user
                 DocumentDAO documentDAO = new DocumentDAO(servletConnection);
                 Document document = documentDAO.getDocumentByID(documentID, ownerID);
                 if (document == null) {
@@ -143,7 +143,7 @@ public class DocumentServlet extends HttpServlet {
                     sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }
-                // The folder actually exists and is owned by the user, so I can proceed
+                // The document actually exists and is owned by the user, so I can proceed
                 documentDAO.deleteDocument(documentID, ownerID);
                 // If everything went well, we reply with a success message
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -161,7 +161,7 @@ public class DocumentServlet extends HttpServlet {
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
         } else {
-            ErrorDTO errorDTO = new ErrorDTO("The document ID is missing from the request. " +
+            ErrorDTO errorDTO = new ErrorDTO("Malformed request. Check the API endpoint. " +
                     "Are you trying to hijack the request?");
             sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
         }
@@ -207,7 +207,7 @@ public class DocumentServlet extends HttpServlet {
                 // If everything went well, we reply with a success message
                 resp.setStatus(HttpServletResponse.SC_OK);
             } catch (FailedInputParsingException e) {
-                ErrorDTO errorDTO = new ErrorDTO("The document ID is not a valid integer. " +
+                ErrorDTO errorDTO = new ErrorDTO("The document ID provided is not a valid integer. " +
                         "Are you trying to hijack the request?");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             } catch (SQLException e) {
@@ -222,9 +222,12 @@ public class DocumentServlet extends HttpServlet {
                     ErrorDTO errorDTO = new ErrorDTO("Unable to move the document due to an unknown error.");
                     sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 }
+            } catch (JsonIOException | JsonSyntaxException e) {
+                ErrorDTO errorDTO = new ErrorDTO("Malformed request. Are you trying to hijack the request?");
+                sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             }
         } else {
-            ErrorDTO errorDTO = new ErrorDTO("The document ID is missing from the request. " +
+            ErrorDTO errorDTO = new ErrorDTO("Malformed request. Check the API endpoint. " +
                     "Are you trying to hijack the request?");
             sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
         }
