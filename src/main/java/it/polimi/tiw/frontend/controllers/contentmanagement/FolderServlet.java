@@ -7,9 +7,11 @@ import it.polimi.tiw.backend.beans.Folder;
 import it.polimi.tiw.backend.beans.User;
 import it.polimi.tiw.backend.dao.DocumentDAO;
 import it.polimi.tiw.backend.dao.FolderDAO;
+import it.polimi.tiw.backend.dao.exceptions.FolderDeletionException;
 import it.polimi.tiw.backend.utilities.DatabaseConnectionBuilder;
 import it.polimi.tiw.backend.utilities.Validators;
 import it.polimi.tiw.backend.utilities.exceptions.FailedInputParsingException;
+import it.polimi.tiw.backend.utilities.exceptions.UnknownErrorCodeException;
 import it.polimi.tiw.frontend.messages.outbound.contentmanagement.FolderDetailsDTO;
 import it.polimi.tiw.frontend.messages.outbound.contentmanagement.templates.DocumentPlaceholderClass;
 import it.polimi.tiw.frontend.messages.outbound.contentmanagement.templates.FolderPlaceholderClass;
@@ -117,6 +119,56 @@ public class FolderServlet extends HttpServlet {
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
             } catch (SQLException e) {
                 ErrorDTO errorDTO = new ErrorDTO("Unable to retrieve the folder content due to " +
+                        "a critical error in the database.");
+                sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            ErrorDTO errorDTO = new ErrorDTO("The folder ID is missing from the request. " +
+                    "Are you trying to hijack the request?");
+            sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        // Get the request URI (the part of the URL after the domain name)
+        String requestURI = req.getRequestURI();
+        // Get the context path (the part of the URL that represents the app)
+        String contextPath = req.getContextPath();
+        // Remove everything before the "/api/folders/" part of the URL
+        String path = requestURI.substring(contextPath.length() + "/api/folders/".length());
+        // Split the path into its parts
+        String[] pathParts = path.split("/");
+
+        // Ensure the URL matches the pattern /api/folders/{folderID}
+        if (pathParts.length == 1) {
+            try {
+                // Get the folderID from the pathInfo and store it in a variable
+                int folderID = Validators.parseInt(pathParts[0]); // Remove the leading "/"
+                // Get the ownerID from the session and store it in a variable
+                int ownerID = ((User) req.getSession().getAttribute("user")).getUserID();
+                // Ensure that the folder I want to delete actually exists and is owned by the user
+                FolderDAO folderDAO = new FolderDAO(servletConnection);
+                Folder folder = folderDAO.getFolderByID(folderID, ownerID);
+                if (folder == null) {
+                    ErrorDTO errorDTO = new ErrorDTO("The folder you are asking to delete does not exist or " +
+                            "is not owned by the logged user. Are you trying to hijack the request?");
+                    sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_NOT_FOUND);
+                    return;
+                }
+                // The folder actually exists and is owned by the user, so I can proceed
+                folderDAO.deleteFolder(folderID, ownerID);
+                // If everything went well, we reply with a success message
+                resp.setStatus(HttpServletResponse.SC_OK);
+            } catch (FailedInputParsingException | FolderDeletionException e) {
+                try {
+                    ErrorDTO errorDTO = new ErrorDTO(Validators.retrieveErrorMessageFromErrorCode(e.getErrorCode()));
+                    sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
+                } catch (UnknownErrorCodeException ignored) {
+                    ErrorDTO errorDTO = new ErrorDTO("Unable to delete the folder due to an unknown error.");
+                    sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
+            } catch (SQLException e) {
+                ErrorDTO errorDTO = new ErrorDTO("Unable to delete the folder content due to " +
                         "a critical error in the database.");
                 sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             }
