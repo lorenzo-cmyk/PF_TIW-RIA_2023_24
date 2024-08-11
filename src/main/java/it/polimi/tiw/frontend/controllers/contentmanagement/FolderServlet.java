@@ -2,13 +2,17 @@ package it.polimi.tiw.frontend.controllers.contentmanagement;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import it.polimi.tiw.backend.beans.Document;
 import it.polimi.tiw.backend.beans.Folder;
 import it.polimi.tiw.backend.beans.User;
+import it.polimi.tiw.backend.dao.DocumentDAO;
 import it.polimi.tiw.backend.dao.FolderDAO;
 import it.polimi.tiw.backend.utilities.DatabaseConnectionBuilder;
 import it.polimi.tiw.backend.utilities.Validators;
 import it.polimi.tiw.backend.utilities.exceptions.FailedInputParsingException;
 import it.polimi.tiw.frontend.messages.outbound.contentmanagement.FolderDetailsDTO;
+import it.polimi.tiw.frontend.messages.outbound.contentmanagement.templates.DocumentPlaceholderClass;
+import it.polimi.tiw.frontend.messages.outbound.contentmanagement.templates.FolderPlaceholderClass;
 import it.polimi.tiw.frontend.messages.outbound.generic.ErrorDTO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * This servlet is used to retrieve the details of a folder given its ID. It is also used to delete a folder.
@@ -75,9 +80,30 @@ public class FolderServlet extends HttpServlet {
                     sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }
-                // Retrieve the folder's details and send them to the client
-                FolderDetailsDTO folderDetailsDTO = new FolderDetailsDTO(folder.getFolderID(), folder.getFolderName(),
-                        folder.getCreationDate(), folder.getParentFolderID());
+                // The folder actually exists and is owned by the user, so I can proceed
+                List<Folder> subfolders = folderDAO.getSubfolders(folderID, ownerID);
+                // Retrieve the documents contained in the folder
+                DocumentDAO documentDAO = new DocumentDAO(servletConnection);
+                List<Document> documents = documentDAO.getDocumentsByFolder(folderID, ownerID);
+                // Convert the list of subfolders to a list of FolderPlaceholderClass objects
+                List<FolderPlaceholderClass> subfoldersDTO = subfolders.stream()
+                        .map(subfolder ->
+                                new FolderPlaceholderClass(subfolder.getFolderID(), subfolder.getFolderName())
+                        ).toList();
+                // Convert the list of documents to a list of DocumentPlaceholderClass objects
+                List<DocumentPlaceholderClass> documentsDTO = documents.stream()
+                        .map(document ->
+                                new DocumentPlaceholderClass(document.getDocumentID(), document.getDocumentName())
+                        ).toList();
+                // Send the information retrieved to the client
+                FolderDetailsDTO folderDetailsDTO = new FolderDetailsDTO(
+                        folder.getFolderID(),
+                        folder.getFolderName(),
+                        folder.getCreationDate(),
+                        folder.getParentFolderID(),
+                        subfoldersDTO,
+                        documentsDTO
+                );
                 // Sending the JSON response
                 Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
                 String folderDetailsJson = gson.toJson(folderDetailsDTO);
@@ -107,5 +133,4 @@ public class FolderServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().println(new Gson().toJson(errorDTO));
     }
-
 }
