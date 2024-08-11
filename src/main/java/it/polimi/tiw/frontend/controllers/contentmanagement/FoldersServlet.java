@@ -1,7 +1,6 @@
 package it.polimi.tiw.frontend.controllers.contentmanagement;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import it.polimi.tiw.backend.beans.Folder;
 import it.polimi.tiw.backend.beans.User;
@@ -14,6 +13,7 @@ import it.polimi.tiw.backend.utilities.Validators;
 import it.polimi.tiw.backend.utilities.exceptions.UnknownErrorCodeException;
 import it.polimi.tiw.backend.utilities.templates.TreeNode;
 import it.polimi.tiw.frontend.messages.inbound.contentmanagement.FolderCreationDTO;
+import it.polimi.tiw.frontend.messages.outbound.contentmanagement.DirectoryStructureDTO;
 import it.polimi.tiw.frontend.messages.outbound.generic.ErrorDTO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -23,6 +23,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This servlet is used to interact with the directory structure of the user.
@@ -62,9 +64,10 @@ public class FoldersServlet extends HttpServlet {
             FolderDAO folderDAO = new FolderDAO(servletConnection);
             TreeNode<Folder> foldersTree = folderDAO.buildFolderTree(-1, user.getUserID());
             // Converting the tree into a JSON and change the GSON date format to the one used by the frontend
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
-            // FIXME: Improve the JSON structure to make it more readable
-            String foldersTreeJson = gson.toJson(foldersTree);
+            List<DirectoryStructureDTO> directoryStructureDTO = new ArrayList<>();
+            buildDTOFromFolderTree(foldersTree, directoryStructureDTO);
+            Gson gson = new Gson();
+            String foldersTreeJson = gson.toJson(directoryStructureDTO);
             // Sending the JSON response
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.setContentType("application/json");
@@ -88,7 +91,8 @@ public class FoldersServlet extends HttpServlet {
             // Then, we get the OwnerID from the session
             int ownerID = ((User) req.getSession().getAttribute("user")).getUserID();
             // Create the folder object
-            Folder folder = new Folder(folderCreationDTO.getFolderName(), ownerID, folderCreationDTO.getParentFolderId());
+            Folder folder = new Folder(folderCreationDTO.getFolderName(), ownerID,
+                    folderCreationDTO.getParentFolderId());
             // Create the folder in the database
             FolderDAO folderDAO = new FolderDAO(servletConnection);
             folderDAO.createFolder(folder);
@@ -114,5 +118,29 @@ public class FoldersServlet extends HttpServlet {
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().println(new Gson().toJson(errorDTO));
+    }
+
+    private void buildDTOFromFolderTree(TreeNode<Folder> folderTree, List<DirectoryStructureDTO> DTOList) {
+        // Build an empty array for the subfolders of the current folder
+        List<DirectoryStructureDTO> subfolders = new ArrayList<>();
+        // If the current folder has data, we build the DTO for it and
+        // add it to the list (otherwise, we can just skip it)
+        if (folderTree.getNodeData() != null) {
+            // Build the DTO for the current folder
+            DirectoryStructureDTO newDirectoryStructureDTO = new DirectoryStructureDTO(
+                    folderTree.getNodeData().getFolderName(),
+                    folderTree.getNodeData().getFolderID(),
+                    subfolders
+            );
+            // Add the DTO to the list
+            DTOList.add(newDirectoryStructureDTO);
+        } else {
+            subfolders = DTOList;
+        }
+        // Recursive call to traverse the tree
+        for (TreeNode<Folder> subfolder : folderTree.getNodeChildren()) {
+            buildDTOFromFolderTree(subfolder, subfolders);
+        }
+
     }
 }
