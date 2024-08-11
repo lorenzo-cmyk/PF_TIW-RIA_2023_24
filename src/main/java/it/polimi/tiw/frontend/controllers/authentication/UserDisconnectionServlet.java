@@ -17,7 +17,7 @@ public class UserDisconnectionServlet extends HttpServlet {
         super();
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) {
         // Invalidate the session
         req.getSession().invalidate();
         // Reply with a 200 OK status
