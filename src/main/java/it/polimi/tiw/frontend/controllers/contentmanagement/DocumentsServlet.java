@@ -1,7 +1,7 @@
 package it.polimi.tiw.frontend.controllers.contentmanagement;
 
-
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import it.polimi.tiw.backend.beans.Document;
 import it.polimi.tiw.backend.beans.User;
@@ -90,6 +90,9 @@ public class DocumentsServlet extends HttpServlet {
             ErrorDTO errorDTO = new ErrorDTO("Unable to create the new document due " +
                     "to a critical error in the database.");
             sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        } catch (JsonIOException | JsonSyntaxException e) {
+            ErrorDTO errorDTO = new ErrorDTO("Malformed request. Are you trying to hijack the request?");
+            sendErrorDTO(resp, errorDTO, HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
@@ -99,5 +102,4 @@ public class DocumentsServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().println(new Gson().toJson(errorDTO));
     }
-
 }
