@@ -21,7 +21,7 @@ public class FolderCreationDTO {
     public FolderCreationDTO(String folderName, int parentFolderId) throws FailedInputParsingException {
         this.folderName = Validators.parseString(folderName);
         // The Gson library just set a default value of 0 if the field is missing!
-        if(parentFolderId <= 0) {
+        if (parentFolderId <= 0) {
             throw new FailedInputParsingException();
         }
         this.parentFolderId = parentFolderId;
