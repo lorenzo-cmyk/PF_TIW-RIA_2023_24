@@ -16,7 +16,11 @@ export default class LocalStorageInterface {
      * @param {boolean} isAuthenticated The authentication status of the user.
      */
     storeAuthenticationStatus(isAuthenticated) {
-        localStorage.setItem("authenticationStatus", isAuthenticated);
+        if (isAuthenticated) {
+            localStorage.setItem("authenticationStatus", "true");
+        } else {
+            localStorage.setItem("authenticationStatus", "false");
+        }
     }
 
     /**
@@ -24,6 +28,6 @@ export default class LocalStorageInterface {
      * @returns {boolean} The authentication status of the user.
      */
     getAuthenticationStatus() {
-        return localStorage.getItem("authenticationStatus");
+        return localStorage.getItem("authenticationStatus") === "true";
     }
 }
