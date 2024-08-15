@@ -28,88 +28,92 @@
                                 </div>
                             </article>
                             <form action="#" id="login-form">
-                                <div class="field">
-                                    <label class="label" for="login-form-username">Username</label>
-                                    <div class="control has-icons-left">
-                                        <input class="input" id="login-form-username" maxlength="63" minlength="1"
-                                               name="username" pattern="^[a-zA-Z0-9]+$" placeholder="e.g. hi1234"
-                                               required type="text">
-                                        <span class="icon is-small is-left">
+                                <fieldset id="login-form-fieldset">
+                                    <div class="field">
+                                        <label class="label" for="login-form-username">Username</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" id="login-form-username" maxlength="63" minlength="1"
+                                                   name="username" pattern="^[a-zA-Z0-9]+$" placeholder="e.g. hi1234"
+                                                   required type="text">
+                                            <span class="icon is-small is-left">
                                                 <i class="fas fa-user"></i>
                                             </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="login-form-password">Password</label>
-                                    <div class="control has-icons-left">
-                                        <input class="input" id="login-form-password" maxlength="127" minlength="1"
-                                               name="password" placeholder="e.g. ********" required type="password">
-                                        <span class="icon is-small is-left">
+                                    <div class="field">
+                                        <label class="label" for="login-form-password">Password</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" id="login-form-password" maxlength="127" minlength="1"
+                                                   name="password" placeholder="e.g. ********" required type="password">
+                                            <span class="icon is-small is-left">
                                                 <i class="fas fa-lock"></i>
                                             </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="field">
-                                    <div class="control">
-                                        <button class="button is-link" id="login-form-button"
-                                                type="button">Login
-                                        </button>
+                                    <div class="field">
+                                        <div class="control">
+                                            <button class="button is-link" id="login-form-button"
+                                                    type="button">Login
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                </fieldset>
                             </form>
                             <form action="#" id="registration-form">
-                                <div class="field">
-                                    <label class="label" for="registration-form-username">Username</label>
-                                    <div class="control has-icons-left">
-                                        <input class="input" id="registration-form-username" maxlength="63"
-                                               minlength="1" name="username" pattern="^[a-zA-Z0-9]+$"
-                                               placeholder="e.g. hi1234" required type="text">
-                                        <span class="icon is-small is-left">
+                                <fieldset id="registration-form-fieldset">
+                                    <div class="field">
+                                        <label class="label" for="registration-form-username">Username</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" id="registration-form-username" maxlength="63"
+                                                   minlength="1" name="username" pattern="^[a-zA-Z0-9]+$"
+                                                   placeholder="e.g. hi1234" required type="text">
+                                            <span class="icon is-small is-left">
                                                 <i class="fas fa-user"></i>
                                             </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="registration-form-email">Email</label>
-                                    <div class="control has-icons-left">
-                                        <input class="input" id="registration-form-email" maxlength="63"
-                                               minlength="1" name="email" placeholder="e.g. hi@mail.arpa" required
-                                               type="email">
-                                        <span class="icon is-small is-left">
+                                    <div class="field">
+                                        <label class="label" for="registration-form-email">Email</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" id="registration-form-email" maxlength="63"
+                                                   minlength="1" name="email" placeholder="e.g. hi@mail.arpa" required
+                                                   type="email">
+                                            <span class="icon is-small is-left">
                                                 <i class="fas fa-envelope"></i>
                                             </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="registration-form-password">Password</label>
-                                    <div class="control has-icons-left">
-                                        <input class="input" id="registration-form-password" maxlength="127"
-                                               minlength="1" name="password" placeholder="e.g. ********" required
-                                               type="password">
-                                        <span class="icon is-small is-left">
+                                    <div class="field">
+                                        <label class="label" for="registration-form-password">Password</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" id="registration-form-password" maxlength="127"
+                                                   minlength="1" name="password" placeholder="e.g. ********" required
+                                                   type="password">
+                                            <span class="icon is-small is-left">
                                                 <i class="fas fa-lock"></i>
                                             </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="registration-form-confirmPassword">Confirm
-                                        Password</label>
-                                    <div class="control has-icons-left">
-                                        <input class="input" id="registration-form-confirmPassword" maxlength="127"
-                                               minlength="1" name="confirmPassword" placeholder="e.g. ********"
-                                               required type="password">
-                                        <span class="icon is-small is-left">
+                                    <div class="field">
+                                        <label class="label" for="registration-form-confirmPassword">Confirm
+                                            Password</label>
+                                        <div class="control has-icons-left">
+                                            <input class="input" id="registration-form-confirmPassword" maxlength="127"
+                                                   minlength="1" name="confirmPassword" placeholder="e.g. ********"
+                                                   required type="password">
+                                            <span class="icon is-small is-left">
                                                 <i class="fas fa-lock"></i>
                                             </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="field">
-                                    <div class="control">
-                                        <button class="button is-link" id="registration-form-button"
-                                                type="button">Submit
-                                        </button>
+                                    <div class="field">
+                                        <div class="control">
+                                            <button class="button is-link" id="registration-form-button"
+                                                    type="button">Submit
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
+                                </fieldset>
                             </form>
                             <div class="content">
                                 <br>
