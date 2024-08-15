@@ -91,6 +91,6 @@ export default class User {
      * @throws {Error} If the logout fails for any reason.
      */
     async logoutUser() {
-        return await this.apiInterface.doGET("auth/logout", null, 200);
+        return await this.apiInterface.doGET("auth/logout", '', 200);
     }
 }
