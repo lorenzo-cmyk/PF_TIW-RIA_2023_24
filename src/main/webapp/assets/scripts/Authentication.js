@@ -1,4 +1,5 @@
 import User from "./modules/abstractions/User.js";
+import LocalStorageInterface from "./modules/utilities/LocalStorageInterface.js";
 
 /**
  * Class responsible in managing the authentication page.
@@ -203,6 +204,15 @@ class AuthenticationPage {
             alert("The registration button is only available on the registration page.");
             return;
         }
+        // Check the validity of the registration form before proceeding in the registration process.
+        const registrationForm = document.getElementById("registration-form");
+        if (!registrationForm.checkValidity()) {
+            registrationForm.reportValidity();
+            return;
+        }
+        // Prevent the user from spamming the registration button or altering the form.
+        const registrationFormFieldset = document.getElementById("registration-form-fieldset");
+        registrationFormFieldset.disabled = true;
         // Extract the values from the registration form.
         const username = document.getElementById("registration-form-username").value;
         const email = document.getElementById("registration-form-email").value;
@@ -220,13 +230,19 @@ class AuthenticationPage {
                 // If the registration fails, show an error message.
                 this.setPageMessage("message is-danger", error.message);
             });
+        // Re-enable the registration form.
+        registrationFormFieldset.disabled = false;
     }
 }
 
-// When the page is loaded, create a new AuthenticationPage object and initialize the login page.
-
 window.onload = function () {
-    // TODO: Check the authentication status inside the local storage.
+    // Check if the user is already authenticated. If so, redirect to the index page.
+    const localStorageInterface = new LocalStorageInterface();
+    if (localStorageInterface.getAuthenticationStatus()) {
+        window.location.href = "index.html";
+        return;
+    }
+
     const authenticationPage = new AuthenticationPage();
     authenticationPage.initializeLoginPage();
 }
