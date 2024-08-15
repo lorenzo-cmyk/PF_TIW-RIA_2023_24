@@ -90,9 +90,9 @@ class AuthenticationPage {
         // Retrieve the "login-form-button" element
         const loginFormButton = document.getElementById("login-form-button");
         // Set the action of the button.
-        loginFormButton.addEventListener("submit", (event) => {
+        loginFormButton.addEventListener("click", (event) => {
             event.preventDefault();
-            // TODO: Implement method.
+            this.handleLoginButtonClick();
         });
     }
 
@@ -232,6 +232,44 @@ class AuthenticationPage {
             });
         // Re-enable the registration form.
         registrationFormFieldset.disabled = false;
+    }
+
+    /**
+     * Method to handle the click on the login button.
+     */
+    handleLoginButtonClick() {
+        // Check the current pageStatus and ensure it is "login".
+        if (this.pageStatus !== "login") {
+            alert("The login button is only available on the login page.");
+            return;
+        }
+        // Check the validity of the login form before proceeding in the login process.
+        const loginForm = document.getElementById("login-form");
+        if (!loginForm.checkValidity()) {
+            loginForm.reportValidity();
+            return;
+        }
+        // Prevent the user from spamming the login button or altering the form.
+        const loginFormFieldset = document.getElementById("login-form-fieldset");
+        loginFormFieldset.disabled = true;
+        // Extract the values from the login form.
+        const username = document.getElementById("login-form-username").value;
+        const password = document.getElementById("login-form-password").value;
+        // Create a new User object and call the loginUser method.
+        const user = new User();
+        user.loginUser(username, password)
+            .then(() => {
+                // If the login is successful, store the authentication status and redirect to the index page.
+                const localStorageInterface = new LocalStorageInterface();
+                localStorageInterface.storeAuthenticationStatus(true);
+                window.location.href = "index.html";
+            })
+            .catch((error) => {
+                // If the login fails, show an error message.
+                this.setPageMessage("message is-danger", error.message);
+            });
+        // Re-enable the login form.
+        loginFormFieldset.disabled = false;
     }
 }
 
