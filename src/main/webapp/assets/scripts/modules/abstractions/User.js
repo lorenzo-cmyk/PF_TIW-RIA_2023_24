@@ -96,14 +96,9 @@ export default class User {
 
     /**
      * Method to check if the user is logged in.
-     * @returns {Boolean} Whether the user is logged in or not.
+     * @returns {Promise} A promise object representing the outcome of the action.
      */
-    async isAuthenticated() {
-        try {
-            const response = await this.apiInterface.doGET("auth/check", null, 200);
-            return response.status === 200;
-        } catch {
-            return false;
-        }
+    async checkAuthentication() {
+        return await this.apiInterface.doGET("auth/check", null, 200);
     }
 }
