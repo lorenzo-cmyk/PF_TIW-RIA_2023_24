@@ -91,7 +91,7 @@ export default class User {
      * @throws {Error} If the logout fails for any reason.
      */
     async logoutUser() {
-        return await this.apiInterface.doDELETE("auth/logout", '', 200);
+        return await this.apiInterface.doDELETE("auth/logout", null, 200);
     }
 
     /**
@@ -99,7 +99,11 @@ export default class User {
      * @returns {Boolean} Whether the user is logged in or not.
      */
     async isAuthenticated() {
-        const response = await this.apiInterface.doGET("auth/check", '', 200);
-        return response.status === 200;
+        try {
+            const response = await this.apiInterface.doGET("auth/check", null, 200);
+            return response.status === 200;
+        } catch {
+            return false;
+        }
     }
 }
