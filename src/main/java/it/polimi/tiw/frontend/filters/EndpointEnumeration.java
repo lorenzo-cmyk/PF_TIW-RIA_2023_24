@@ -19,6 +19,10 @@ public enum EndpointEnumeration {
      */
     AUTHENTICATION_REGISTER("/api/auth/register", "POST", false),
     /**
+     * Used to check if the user is authenticated.
+     */
+    AUTHENTICATION_CHECK("/api/auth/check", "GET", true),
+    /**
      * Used to get the user's directory structure.
      */
     CONTENTMANAGEMENT_GETFOLDERS("/api/folders", "GET", true),
