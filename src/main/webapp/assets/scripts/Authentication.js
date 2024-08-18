@@ -1,5 +1,4 @@
 import User from "./modules/abstractions/User.js";
-import LocalStorageInterface from "./modules/utilities/LocalStorageInterface.js";
 
 /**
  * Class responsible in managing the authentication page.
@@ -259,9 +258,7 @@ class AuthenticationPage {
         const user = new User();
         user.loginUser(username, password)
             .then(() => {
-                // If the login is successful, store the authentication status and redirect to the index page.
-                const localStorageInterface = new LocalStorageInterface();
-                localStorageInterface.storeAuthenticationStatus(true);
+                // If the login is successful, redirect to the index page.
                 window.location.href = "index.html";
             })
             .catch((error) => {
@@ -271,16 +268,23 @@ class AuthenticationPage {
         // Re-enable the login form.
         loginFormFieldset.disabled = false;
     }
+
+    /**
+     * Method used to initialize the authentication page.
+     */
+    initialize() {
+        this.initializeLoginPage();
+    }
 }
 
-window.onload = function () {
+window.onload = async function () {
     // Check if the user is already authenticated. If so, redirect to the index page.
-    const localStorageInterface = new LocalStorageInterface();
-    if (localStorageInterface.getAuthenticationStatus()) {
-        window.location.href = "index.html";
-        return;
-    }
-
-    const authenticationPage = new AuthenticationPage();
-    authenticationPage.initializeLoginPage();
+    const user = new User();
+    user.checkAuthentication()
+        .then(() => {
+            alert("HI");
+        })
+        .catch(() => {
+            new AuthenticationPage().initialize();
+        });
 }
