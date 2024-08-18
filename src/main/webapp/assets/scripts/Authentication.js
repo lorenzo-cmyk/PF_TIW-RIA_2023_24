@@ -212,6 +212,8 @@ class AuthenticationPage {
         // Prevent the user from spamming the registration button or altering the form.
         const registrationFormFieldset = document.getElementById("registration-form-fieldset");
         registrationFormFieldset.disabled = true;
+        const registrationFormButton = document.getElementById("registration-form-button");
+        registrationFormButton.disabled = true;
         // Extract the values from the registration form.
         const username = document.getElementById("registration-form-username").value;
         const email = document.getElementById("registration-form-email").value;
@@ -224,6 +226,11 @@ class AuthenticationPage {
                 // If the registration is successful, show a success message.
                 this.setPageMessage("message is-success", "The registration was successful! " +
                     "You can now log in.");
+                // Clear the registration form.
+                document.getElementById("registration-form-username").value = "";
+                document.getElementById("registration-form-email").value = "";
+                document.getElementById("registration-form-password").value = "";
+                document.getElementById("registration-form-confirmPassword").value = "";
             })
             .catch((error) => {
                 // If the registration fails, show an error message.
@@ -231,6 +238,7 @@ class AuthenticationPage {
             });
         // Re-enable the registration form.
         registrationFormFieldset.disabled = false;
+        registrationFormButton.disabled = false;
     }
 
     /**
@@ -264,6 +272,10 @@ class AuthenticationPage {
             .catch((error) => {
                 // If the login fails, show an error message.
                 this.setPageMessage("message is-danger", error.message);
+            })
+            .finally(() => {
+                // Clear the password field.
+                document.getElementById("login-form-password").value = "";
             });
         // Re-enable the login form.
         loginFormFieldset.disabled = false;
@@ -282,7 +294,8 @@ window.onload = async function () {
     const user = new User();
     user.checkAuthentication()
         .then(() => {
-            alert("HI");
+            // Redirect to the index page.
+            window.location.href = "index.html";
         })
         .catch(() => {
             new AuthenticationPage().initialize();
