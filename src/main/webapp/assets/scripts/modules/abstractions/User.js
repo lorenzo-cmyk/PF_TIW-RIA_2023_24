@@ -61,7 +61,7 @@ export default class User {
 
     /**
      * Method used to log in a user.
-     * @param {string} username The email of the user.
+     * @param {string} username The username of the user.
      * @param {string} password The password of the user.
      * @returns {Promise} The promise of action to be executed.
      * @throws {Error} If the login fails for any reason.
