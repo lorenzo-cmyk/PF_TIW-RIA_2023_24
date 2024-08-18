@@ -60,7 +60,7 @@ export default class APIInterface {
     /**
      * Method to perform a GET request to the API server.
      * @param {string} apiEndpoint The endpoint of the API to be called.
-     * @param {string} requestBody The body of the request (if present must be a JSON string).
+     * @param {Object} requestBody The body of the request (if present must be a JSON string).
      * @param {number} expectedStatus The expected status code of the response.
      * @returns {Promise} The promise of action to be executed.
      * @throws {Error} If the request fails for any reason.
@@ -72,7 +72,7 @@ export default class APIInterface {
     /**
      * Method to perform a POST request to the API server.
      * @param {string} apiEndpoint The endpoint of the API to be called.
-     * @param {string} requestBody The body of the request (if present must be a JSON string).
+     * @param {Object} requestBody The body of the request (if present must be a JSON string).
      * @param {number} expectedStatus The expected status code of the response.
      * @returns {Promise} The promise of action to be executed.
      * @throws {Error} If the request fails for any reason.
@@ -84,7 +84,7 @@ export default class APIInterface {
     /**
      * Method to perform a DELETE request to the API server.
      * @param {string} apiEndpoint The endpoint of the API to be called.
-     * @param {string} requestBody The body of the request (if present must be a JSON string).
+     * @param {Object} requestBody The body of the request (if present must be a JSON string).
      * @param {number} expectedStatus The expected status code of the response.
      * @returns {Promise} The promise of action to be executed.
      * @throws {Error} If the request fails for any reason.
