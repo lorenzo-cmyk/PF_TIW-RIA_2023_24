@@ -60,4 +60,17 @@ export default class Validators {
     validatePasswordConfirmation(password, passwordConfirmation) {
         return password === passwordConfirmation;
     }
+
+    /**
+     * Method to validate the folder name provided by the user.
+     * Requirements:
+     * - The folder name must be at least 1 character long.
+     * - The folder name must be under 64 characters long.
+     * @param {string} folderName The folder name to be validated.
+     * @returns {boolean} True if the folder name is valid, false otherwise.
+     */
+    validateFolderName(folderName) {
+        const folderNameRegex = /^.{1,64}$/;
+        return folderNameRegex.test(folderName);
+    }
 }
