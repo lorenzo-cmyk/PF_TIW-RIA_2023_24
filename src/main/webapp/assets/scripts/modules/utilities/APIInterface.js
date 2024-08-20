@@ -50,10 +50,10 @@ export default class APIInterface {
         }
 
         // If everything went well, return the response.
-        if (APIResponse.body == null) {
-            return await APIResponse.json();
-        } else {
+        if (APIResponse.headers.get("content-length") === "0") {
             return null;
+        } else {
+            return await APIResponse.json();
         }
     }
 
