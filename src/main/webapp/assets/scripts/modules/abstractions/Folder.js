@@ -5,8 +5,8 @@
  * It uses the Validators and APIInterface classes to perform its actions.
  * It is exported as a module to be used in other scripts.
  */
-import Validators from "../utilities/Validators";
-import APIInterface from "../utilities/APIInterface";
+import Validators from "../utilities/Validators.js";
+import APIInterface from "../utilities/APIInterface.js";
 
 /**
  * Class responsible for all folder-related actions.
@@ -35,7 +35,7 @@ export default class Folder {
             throw new Error("The folder name provided is invalid. " +
                 "Please provide a valid folder name and try again.");
         }
-        if(parentFolderId <= 0) {
+        if (parentFolderId <= 0) {
             throw new Error("The parent folder id provided is invalid. " +
                 "Please provide a valid parent folder id and try again.");
         }
