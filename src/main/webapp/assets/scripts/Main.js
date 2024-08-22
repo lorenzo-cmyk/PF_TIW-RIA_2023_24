@@ -1,4 +1,5 @@
 import Folder from "./modules/abstractions/Folder.js";
+import User from "./modules/abstractions/User.js";
 
 class Orchestrator {
 
@@ -104,30 +105,32 @@ class Orchestrator {
         return document.getElementById("page-content");
     }
 
+    /**
+     * Method responsible for adding a logout action to the actions list.
+     */
+    addLogoutAction() {
+        this.addAction("🚪 Logout", () => {
+            new User().logoutUser()
+                .then(() => {
+                    window.location.href = "authentication.html";
+                })
+                .catch((error) => {
+                    this.setPageMessage("message is-danger", error.message);
+                });
+        })
+    }
+
+    /**
+     * Method responsible for adding a "home" action to the actions list.
+     */
+    addHomeAction() {
+        this.addAction("🏠 Home", () => {
+            new Homepage().initializeHomepage();
+        });
+    }
+
     init() {
-        // Set the title of the page.
-        this.setPageTitle("Home");
-        // Set the title of the tab.
-        this.setTabTitle("Home");
-        // Set the message of the page.
-        this.setPageMessage("message", "Welcome to the Home page!");
-        // Clear the actions list.
-        this.clearActionsList();
-        // Add an action to the actions list.
-        this.addAction("😂 Hihi", () => {
-        });
-        // Clear the actions list.
-        this.clearActionsList();
-        // Add an action to the actions list.
-        this.addAction("😂 Hihi", () => {
-        });
-        this.addAction("😂 Hihi", () => {
-        });
-        this.addAction("😂 Hihi", () => {
-        });
-
-        new Homepage().buildDirectoryStructure();
-
+        new Homepage().initializeHomepage();
     }
 }
 
@@ -143,6 +146,28 @@ class Homepage {
             return Homepage.instance;
         }
         Homepage.instance = this;
+    }
+
+    /**
+     * Method responsible for initializing the Homepage.
+     */
+    initializeHomepage() {
+        // Set the title of the page.
+        new Orchestrator().setPageTitle("Homepage 🏠");
+        // Set the title of the tab.
+        new Orchestrator().setTabTitle("TIW-DMS - Homepage");
+        // Set the message of the page.
+        new Orchestrator().setPageMessage("message", "Hi, welcome to the DMS!");
+        // Clear the actions list.
+        new Orchestrator().clearActionsList();
+        // Add an action to the actions list.
+        new Orchestrator().addAction("➕ Add New Folder", () => {
+            new ContentManagement().initializeContentManagement();
+        });
+        // Add the logout action to the actions list.
+        new Orchestrator().addLogoutAction();
+        // Build the page itself.
+        this.buildDirectoryStructure();
     }
 
     /**
@@ -202,6 +227,153 @@ class Homepage {
         return folderTree;
     }
 }
+
+class ContentManagement {
+
+    rootFolderForm =
+        '<div class="card">\n' +
+        '   <form action="#" id="new-root-folder-form">\n' +
+        '      <fieldset id="new-root-folder-fieldset">\n' +
+        '         <div class="card-content">\n' +
+        '            <div class="field">\n' +
+        '               <label class="label" for="new-root-folder-form-folder-name">Folder Name</label>\n' +
+        '               <div class="control has-icons-left">\n' +
+        '                  <input class="input" id="new-root-folder-form-folder-name" maxlength="63" minlength="1"\n' +
+        '                     name="new-root-folder-form-folder-name" placeholder="e.g. newRootFolder" required\n' +
+        '                     type="text">\n' +
+        '                  <span class="icon is-small is-left">\n' +
+        '                  <i class="fas fa-text-width"></i>\n' +
+        '                  </span>\n' +
+        '               </div>\n' +
+        '            </div>\n' +
+        '         </div>\n' +
+        '         <footer class="card-footer">\n' +
+        '            <div class="card-footer-item">\n' +
+        '               <button class="button card-footer-item" id="new-root-folder-form-button">Create!</button>\n' +
+        '            </div>\n' +
+        '         </footer>\n' +
+        '      </fieldset>\n' +
+        '   </form>\n' +
+        '</div>';
+
+    /**
+     * Constructor of the ContentManagement class.
+     * This class is a singleton.
+     * @constructor
+     */
+    constructor() {
+        if (ContentManagement.instance) {
+            return ContentManagement.instance;
+        }
+        ContentManagement.instance = this;
+    }
+
+    /**
+     * Method responsible for initializing the content management page.
+     * @param {int} actionID The ID of the action to be executed.
+     * @param {int} folderID The ID of the folder to be managed.
+     */
+    initializeContentManagement(actionID = 1, folderID = -1) {
+        // Set the title of the page.
+        new Orchestrator().setPageTitle("Document Management ➕");
+        // Set the title of the tab.
+        new Orchestrator().setTabTitle("TIW-DMS - Document Management");
+        // Set the message of the page according to the action.
+        this.setPageMessageByAction(actionID);
+        // Clear the actions list.
+        new Orchestrator().clearActionsList();
+        // Add the back action to the actions list.
+        new Orchestrator().addAction("🔙 Go Back", () => {
+            new Homepage().initializeHomepage();
+        });
+        // Add the home action to the actions list.
+        new Orchestrator().addHomeAction();
+        // Add the logout action to the actions list.
+        new Orchestrator().addLogoutAction();
+        // Build the page itself.
+        this.buildContentManagementForm(actionID, folderID);
+    }
+
+    /**
+     * Method responsible for setting the message of the page according to the action.
+     * @param {int} actionID The ID of the action to be executed.
+     */
+    setPageMessageByAction(actionID) {
+        if (actionID === 1) {
+            new Orchestrator().setPageMessage("message",
+                "Fill in the form to create a new top level folder.");
+        } else if (actionID === 2) {
+            new Orchestrator().setPageMessage("message",
+                "Fill in the form to create the subfolder.");
+        } else if (actionID === 3) {
+            new Orchestrator().setPageMessage("message",
+                "Fill in the form to create a new document.");
+        } else {
+            new Orchestrator().setPageMessage("message is-danger",
+                "Unknown action requested. Please try again.");
+        }
+    }
+
+    buildContentManagementForm(actionID, folderID) {
+        // Clear the page current content.
+        new Orchestrator().clearPageContent();
+
+        // Create the form container.
+        const formContainer = document.createElement("div");
+        if (actionID === 1) {
+            formContainer.innerHTML = this.rootFolderForm;
+        }
+
+        // Append the form container to the page content.
+        new Orchestrator().getPageContent().appendChild(formContainer);
+        this.setNewRootFolderFormButtonAction(folderID);
+
+    }
+
+    setNewRootFolderFormButtonAction(folderId) {
+        // Retrieve the "new-root-folder-form-button" element.
+        const newRootFolderFormButton = document.getElementById("new-root-folder-form-button");
+        // Set the action of the button.
+        newRootFolderFormButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.handleNewRootFolderFormButtonClick(folderId);
+        });
+    }
+
+    handleNewRootFolderFormButtonClick(folderId) {
+        // Check the validity of the form.
+        const newRootFolderForm = document.getElementById("new-root-folder-form");
+        if (!newRootFolderForm.checkValidity()) {
+            newRootFolderForm.reportValidity();
+            return;
+        }
+        // Prevent the user from spamming the button or altering the form.
+        const newRootFormFieldset = document.getElementById("new-root-folder-fieldset");
+        newRootFormFieldset.disabled = true;
+        const newRootFolderFormButton = document.getElementById("new-root-folder-form-button");
+        newRootFolderFormButton.disabled = true;
+        // Extract the folder name from the form.
+        const folderName = document.getElementById("new-root-folder-form-folder-name").value;
+        // Create the new root folder.
+        new Folder().createFolder(folderName, folderId)
+            .then(() => {
+                // If the folder was created successfully, go back to the homepage
+                new Homepage().initializeHomepage();
+                new Orchestrator().setPageMessage("message is-success",
+                    "The folder was created successfully.");
+            })
+            .catch((error) => {
+                // If the folder creation failed, show the error message
+                new Orchestrator().setPageMessage("message is-danger", error.message);
+                // Re-enable the form and button
+                newRootFormFieldset.disabled = false;
+                newRootFolderFormButton.disabled = false;
+            });
+    }
+
+
+}
+
 
 // When the window is loaded, create an instance of the Orchestrator class.
 window.onload = function () {
