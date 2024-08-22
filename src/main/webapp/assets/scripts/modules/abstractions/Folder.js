@@ -35,7 +35,7 @@ export default class Folder {
             throw new Error("The folder name provided is invalid. " +
                 "Please provide a valid folder name and try again.");
         }
-        if (parentFolderId <= 0) {
+        if (parentFolderId < -1) {
             throw new Error("The parent folder id provided is invalid. " +
                 "Please provide a valid parent folder id and try again.");
         }
