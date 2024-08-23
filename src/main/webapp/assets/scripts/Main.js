@@ -242,7 +242,7 @@ class Homepage {
             addDocumentLink.href = "#";
             addDocumentLink.addEventListener('click', (event) => {
                 event.preventDefault();
-                // TODO: Will be implemented.
+                new ContentManagement().initializeContentManagement(3, folder.folderID);
             });
 
             // Append the links to the span element
@@ -295,6 +295,51 @@ class ContentManagement {
         '      </fieldset>\n' +
         '   </form>\n' +
         '</div>';
+
+    newDocumentForm =
+        '<div class="card">\n' +
+        '   <form action="#" id="new-document-form">\n' +
+        '      <fieldset id="new-document-fieldset">\n' +
+        '         <div class="card-content">\n' +
+        '            <div class="field">\n' +
+        '               <label class="label" for="new-document-form-documentName">Document Name</label>\n' +
+        '               <div class="control has-icons-left">\n' +
+        '                  <input class="input" id="new-document-form-documentName" maxlength="63" minlength="1"\n' +
+        '                     name="new-document-form-documentName" placeholder="e.g. newDocument" required\n' +
+        '                     type="text">\n' +
+        '                  <span class="icon is-small is-left">\n' +
+        '                  <i class="fas fa-text-width"></i>\n' +
+        '                  </span>\n' +
+        '               </div>\n' +
+        '            </div>\n' +
+        '            <div class="field">\n' +
+        '               <label class="label" for="new-document-form-documentType">Type</label>\n' +
+        '               <div class="control has-icons-left">\n' +
+        '                  <input class="input" id="new-document-form-documentType" maxlength="63" minlength="1"\n' +
+        '                     name="new-document-form-documentType" placeholder="e.g. PDF" required type="text">\n' +
+        '                  <span class="icon is-small is-left">\n' +
+        '                  <i class="fas fa-flask"></i>\n' +
+        '                  </span>\n' +
+        '               </div>\n' +
+        '            </div>\n' +
+        '            <div class="field">\n' +
+        '               <label class="label" for="new-document-form-documentSummary">Summary</label>\n' +
+        '               <div class="control has-icons-left">\n' +
+        '                  <textarea class="textarea" id="new-document-form-documentSummary" maxlength="255"\n' +
+        '                     minlength="1" name="new-document-form-documentSummary"\n' +
+        '                     placeholder="e.g. Classified document, do not share!" required\n' +
+        '                     ></textarea>\n' +
+        '               </div>\n' +
+        '            </div>\n' +
+        '         </div>\n' +
+        '         <footer class="card-footer">\n' +
+        '            <div class="card-footer-item">\n' +
+        '               <button class="button card-footer-item" id="new-document-form-button">Create!</button>\n' +
+        '            </div>\n' +
+        '         </footer>\n' +
+        '      </fieldset>\n' +
+        '   </form>\n' +
+        '</div>'
 
     /**
      * Constructor of the ContentManagement class.
@@ -354,6 +399,11 @@ class ContentManagement {
         }
     }
 
+    /**
+     * Method responsible for building the content management form.
+     * @param {int} actionID The ID of the action to be executed.
+     * @param {int} folderID The ID of the folder to be managed.
+     */
     buildContentManagementForm(actionID, folderID) {
         // Clear the page current content.
         new Orchestrator().clearPageContent();
@@ -364,7 +414,9 @@ class ContentManagement {
             new Orchestrator().getPageContent().appendChild(formContainer);
             this.setNewFolderFormButtonAction(folderID);
         } else if (actionID === 3) {
-            // TODO: Implement the creation of a new document later
+            formContainer.innerHTML = this.newDocumentForm;
+            new Orchestrator().getPageContent().appendChild(formContainer);
+            this.setNewDocumentFormButtonAction(folderID);
         } else {
             new Orchestrator().setPageMessage("message is-danger",
                 "Unknown action requested. Please try again.");
@@ -418,6 +470,55 @@ class ContentManagement {
                 newFormFieldset.disabled = false;
                 newFolderFormButton.disabled = false;
             });
+    }
+
+    /**
+     * Method responsible for setting the action of the new document form button.
+     * @param {int} folderId The ID of the folder where the document should be added to.
+     */
+    setNewDocumentFormButtonAction(folderId) {
+        // Retrieve the "new-document-form-button" element.
+        const newDocumentFormButton = document.getElementById("new-document-form-button");
+        // Set the action of the button.
+        newDocumentFormButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.handleNewDocumentFormButtonClick(folderId);
+        });
+    }
+
+    handleNewDocumentFormButtonClick(folderId) {
+        // Check the validity of the form.
+        const newDocumentForm = document.getElementById("new-document-form");
+        if (!newDocumentForm.checkValidity()) {
+            newDocumentForm.reportValidity();
+            return;
+        }
+        // Prevent the user from spamming the button or altering the form.
+        const newDocumentFieldset = document.getElementById("new-document-fieldset");
+        newDocumentFieldset.disabled = true;
+        const newDocumentFormButton = document.getElementById("new-document-form-button");
+        newDocumentFormButton.disabled = true;
+        // Extract the folder name from the form.
+        const documentName = document.getElementById("new-document-form-documentName").value;
+        const documentType = document.getElementById("new-document-form-documentType").value;
+        const documentSummary = document.getElementById("new-document-form-documentSummary").value;
+        // Create the new document.
+        // TODO: Implement this
+        /*new Folder().createFolder(folderName, folderId)
+            .then(() => {
+                // If the folder was created successfully, go back to the homepage
+                new Homepage().initializeHomepage();
+                new Orchestrator().setPageMessage("message is-success",
+                    "The folder was created successfully.");
+            })
+            .catch((error) => {
+                // If the folder creation failed, show the error message
+                new Orchestrator().setPageMessage("message is-danger", error.message);
+                // Re-enable the form and button
+                newDocumentFieldset.disabled = false;
+                newFolderFormButton.disabled = false;
+            });
+         */
     }
 }
 
