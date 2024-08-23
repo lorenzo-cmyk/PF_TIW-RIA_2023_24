@@ -212,7 +212,41 @@ class Homepage {
         folders.forEach(folder => {
             // Create the <li> element for the folder
             const folderItem = document.createElement('li');
-            folderItem.textContent = folder.folderName;
+
+            // Create a link for the folder name
+            const folderLink = document.createElement('a');
+            folderLink.textContent = folder.folderName;
+            folderLink.href = "#";
+            folderLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                // TODO: Will be implemented.
+            });
+
+            // Create a link for adding a subfolder
+            const addSubfolderLink = document.createElement('a');
+            addSubfolderLink.textContent = "Add Subfolder";
+            addSubfolderLink.href = "#";
+            addSubfolderLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                // Function to handle adding a subfolder
+                new ContentManagement().initializeContentManagement(2, folder.folderID)
+            });
+
+            // Create a link for adding a document
+            const addDocumentLink = document.createElement('a');
+            addDocumentLink.textContent = "Add Document";
+            addDocumentLink.href = "#";
+            addDocumentLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                // TODO: Will be implemented.
+            });
+
+            // Append the links to the <li> element
+            folderItem.appendChild(folderLink);
+            folderItem.appendChild(document.createTextNode(" -> "));
+            folderItem.appendChild(addSubfolderLink);
+            folderItem.appendChild(document.createTextNode(" / "));
+            folderItem.appendChild(addDocumentLink);
 
             // If the folder has subfolders, recursively generate the subfolder tree
             if (folder.subfolders.length > 0) {
@@ -230,16 +264,16 @@ class Homepage {
 
 class ContentManagement {
 
-    rootFolderForm =
+    newFolderForm =
         '<div class="card">\n' +
-        '   <form action="#" id="new-root-folder-form">\n' +
-        '      <fieldset id="new-root-folder-fieldset">\n' +
+        '   <form action="#" id="new-folder-form">\n' +
+        '      <fieldset id="new-folder-fieldset">\n' +
         '         <div class="card-content">\n' +
         '            <div class="field">\n' +
-        '               <label class="label" for="new-root-folder-form-folder-name">Folder Name</label>\n' +
+        '               <label class="label" for="new-folder-form-folder-name">Folder Name</label>\n' +
         '               <div class="control has-icons-left">\n' +
-        '                  <input class="input" id="new-root-folder-form-folder-name" maxlength="63" minlength="1"\n' +
-        '                     name="new-root-folder-form-folder-name" placeholder="e.g. newRootFolder" required\n' +
+        '                  <input class="input" id="new-folder-form-folder-name" maxlength="63" minlength="1"\n' +
+        '                     name="new-folder-form-folder-name" placeholder="e.g. newFolder" required\n' +
         '                     type="text">\n' +
         '                  <span class="icon is-small is-left">\n' +
         '                  <i class="fas fa-text-width"></i>\n' +
@@ -249,7 +283,7 @@ class ContentManagement {
         '         </div>\n' +
         '         <footer class="card-footer">\n' +
         '            <div class="card-footer-item">\n' +
-        '               <button class="button card-footer-item" id="new-root-folder-form-button">Create!</button>\n' +
+        '               <button class="button card-footer-item" id="new-folder-form-button">Create!</button>\n' +
         '            </div>\n' +
         '         </footer>\n' +
         '      </fieldset>\n' +
@@ -317,44 +351,53 @@ class ContentManagement {
     buildContentManagementForm(actionID, folderID) {
         // Clear the page current content.
         new Orchestrator().clearPageContent();
-
         // Create the form container.
         const formContainer = document.createElement("div");
-        if (actionID === 1) {
-            formContainer.innerHTML = this.rootFolderForm;
+        if (actionID === 1 || actionID === 2) {
+            formContainer.innerHTML = this.newFolderForm;
+            new Orchestrator().getPageContent().appendChild(formContainer);
+            this.setNewFolderFormButtonAction(folderID);
+        } else if (actionID === 3) {
+            // TODO: Implement the creation of a new document later
+        } else {
+            new Orchestrator().setPageMessage("message is-danger",
+                "Unknown action requested. Please try again.");
         }
-
-        // Append the form container to the page content.
-        new Orchestrator().getPageContent().appendChild(formContainer);
-        this.setNewRootFolderFormButtonAction(folderID);
-
     }
 
-    setNewRootFolderFormButtonAction(folderId) {
-        // Retrieve the "new-root-folder-form-button" element.
-        const newRootFolderFormButton = document.getElementById("new-root-folder-form-button");
+    /**
+     * Method responsible for setting the action of the new folder form button.
+     * @param {int} folderId The ID of the folder to be managed.
+     */
+    setNewFolderFormButtonAction(folderId) {
+        // Retrieve the "new-folder-form-button" element.
+        const newFolderFormButton = document.getElementById("new-folder-form-button");
         // Set the action of the button.
-        newRootFolderFormButton.addEventListener("click", (event) => {
+        newFolderFormButton.addEventListener("click", (event) => {
             event.preventDefault();
-            this.handleNewRootFolderFormButtonClick(folderId);
+            this.handleNewFolderFormButtonClick(folderId);
         });
     }
 
-    handleNewRootFolderFormButtonClick(folderId) {
+    /**
+     * Method responsible for handling the new folder form button click
+     * @param {int} folderId The ID of the folder to be managed.
+     */
+    handleNewFolderFormButtonClick(folderId) {
         // Check the validity of the form.
-        const newRootFolderForm = document.getElementById("new-root-folder-form");
-        if (!newRootFolderForm.checkValidity()) {
-            newRootFolderForm.reportValidity();
+        const newFolderForm = document.getElementById("new-folder-form");
+        if (!newFolderForm.checkValidity()) {
+            newFolderForm.reportValidity();
             return;
         }
         // Prevent the user from spamming the button or altering the form.
-        const newRootFormFieldset = document.getElementById("new-root-folder-fieldset");
-        newRootFormFieldset.disabled = true;
-        const newRootFolderFormButton = document.getElementById("new-root-folder-form-button");
-        newRootFolderFormButton.disabled = true;
+        const newFormFieldset = document.getElementById("new-folder-fieldset");
+        newFormFieldset.disabled = true;
+        const newFolderFormButton = document.getElementById("new-folder-form-button");
+        newFolderFormButton.disabled = true;
         // Extract the folder name from the form.
-        const folderName = document.getElementById("new-root-folder-form-folder-name").value;
-        // Create the new root folder.
+        const folderName = document.getElementById("new-folder-form-folder-name").value;
+        // Create the new folder.
         new Folder().createFolder(folderName, folderId)
             .then(() => {
                 // If the folder was created successfully, go back to the homepage
@@ -366,14 +409,11 @@ class ContentManagement {
                 // If the folder creation failed, show the error message
                 new Orchestrator().setPageMessage("message is-danger", error.message);
                 // Re-enable the form and button
-                newRootFormFieldset.disabled = false;
-                newRootFolderFormButton.disabled = false;
+                newFormFieldset.disabled = false;
+                newFolderFormButton.disabled = false;
             });
     }
-
-
 }
-
 
 // When the window is loaded, create an instance of the Orchestrator class.
 window.onload = function () {
