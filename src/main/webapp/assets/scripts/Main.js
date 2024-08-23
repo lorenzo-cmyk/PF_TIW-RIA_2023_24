@@ -1,4 +1,5 @@
 import Folder from "./modules/abstractions/Folder.js";
+import Document from "./modules/abstractions/Document.js";
 import User from "./modules/abstractions/User.js";
 
 class Orchestrator {
@@ -486,6 +487,10 @@ class ContentManagement {
         });
     }
 
+    /**
+     * Method responsible for handling the new document form button click.
+     * @param {int} folderId The ID of the folder where the document should be added to.
+     */
     handleNewDocumentFormButtonClick(folderId) {
         // Check the validity of the form.
         const newDocumentForm = document.getElementById("new-document-form");
@@ -503,22 +508,20 @@ class ContentManagement {
         const documentType = document.getElementById("new-document-form-documentType").value;
         const documentSummary = document.getElementById("new-document-form-documentSummary").value;
         // Create the new document.
-        // TODO: Implement this
-        /*new Folder().createFolder(folderName, folderId)
+        new Document().createDocument(documentName, documentType, documentSummary, folderId)
             .then(() => {
-                // If the folder was created successfully, go back to the homepage
+                // If the document was created successfully, go back to the homepage
                 new Homepage().initializeHomepage();
                 new Orchestrator().setPageMessage("message is-success",
-                    "The folder was created successfully.");
+                    "The document was created successfully.");
             })
             .catch((error) => {
                 // If the folder creation failed, show the error message
                 new Orchestrator().setPageMessage("message is-danger", error.message);
                 // Re-enable the form and button
                 newDocumentFieldset.disabled = false;
-                newFolderFormButton.disabled = false;
+                newDocumentFormButton.disabled = false;
             });
-         */
     }
 }
 
