@@ -222,6 +222,10 @@ class Homepage {
                 // TODO: Will be implemented.
             });
 
+            // Create a span to wrap the "Add Subfolder / Add Document" links
+            const actionsSpan = document.createElement('span');
+            actionsSpan.style.fontSize = "smaller"; // Apply smaller font size
+
             // Create a link for adding a subfolder
             const addSubfolderLink = document.createElement('a');
             addSubfolderLink.textContent = "Add Subfolder";
@@ -241,12 +245,14 @@ class Homepage {
                 // TODO: Will be implemented.
             });
 
-            // Append the links to the <li> element
+            // Append the links to the span element
+            actionsSpan.appendChild(document.createTextNode(" -> "));
+            actionsSpan.appendChild(addSubfolderLink);
+            actionsSpan.appendChild(document.createTextNode(" / "));
+            actionsSpan.appendChild(addDocumentLink);
+            // Append the folder name link and actions span to the <li> element
             folderItem.appendChild(folderLink);
-            folderItem.appendChild(document.createTextNode(" -> "));
-            folderItem.appendChild(addSubfolderLink);
-            folderItem.appendChild(document.createTextNode(" / "));
-            folderItem.appendChild(addDocumentLink);
+            folderItem.appendChild(actionsSpan);
 
             // If the folder has subfolders, recursively generate the subfolder tree
             if (folder.subfolders.length > 0) {
