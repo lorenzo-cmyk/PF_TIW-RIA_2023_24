@@ -73,4 +73,41 @@ export default class Validators {
         const folderNameRegex = /^.{1,64}$/;
         return folderNameRegex.test(folderName);
     }
+
+    /**
+     * Method to validate the document name provided by the user.
+     * Requirements:
+     * - The document name must be at least 1 character long.
+     * - The document name must be under 64 characters long.
+     * @param {string} documentName The document name to be validated.
+     * @returns {boolean} True if the document name is valid, false otherwise.
+     */
+    validateDocumentName(documentName) {
+        const documentNameRegex = /^.{1,64}$/;
+        return documentNameRegex.test(documentName);
+    }
+
+    /**
+     * Method to validate the document type provided by the user.
+     * Requirements:
+     * - The document type must be at least 1 character long.
+     * - The document type must be under 64 characters long.
+     * @param {string} documentType The document type to be validated.
+     * @returns {boolean} True if the document type is valid, false otherwise.
+     */
+    validateDocumentType(documentType) {
+        const documentTypeRegex = /^.{1,64}$/;
+        return documentTypeRegex.test(documentType);
+    }
+
+    /**
+     * Method to validate the document summary provided by the user.
+     * Requirements:
+     * - The document summary must be under 256 characters long.
+     * @param {string} documentSummary The document summary to be validated.
+     * @returns {boolean} True if the document summary is valid, false otherwise.
+     */
+    validateDocumentSummary(documentSummary) {
+        return documentSummary.length < 256;
+    }
 }
