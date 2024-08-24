@@ -63,4 +63,22 @@ export default class Document {
             "documents", requestBody, 201
         );
     }
+
+    /**
+     * Method used to retrieve the document with the provided id.
+     * @param {int} documentId The id of the document to be retrieved.
+     * @returns {Promise} The promise of action to be executed.
+     */
+    async retrieveDocument(documentId) {
+        // Check the validity of the document provided data.
+        if (documentId <= -1) {
+            throw new Error("The document id provided is invalid. " +
+                "Please provide a valid document id and try again.");
+        }
+
+        // Perform the request to the API.
+        return await this.apiInterface.doGET(
+            "documents/" + documentId, null, 200
+        );
+    }
 }
