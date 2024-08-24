@@ -300,4 +300,4 @@ window.onload = async function () {
         .catch(() => {
             new AuthenticationPage().initialize();
         });
-}
+};
