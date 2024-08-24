@@ -118,7 +118,7 @@ class Orchestrator {
                 .catch((error) => {
                     this.setPageMessage("message is-danger", error.message);
                 });
-        })
+        });
     }
 
     /**
@@ -234,7 +234,7 @@ class Homepage {
             addSubfolderLink.addEventListener('click', (event) => {
                 event.preventDefault();
                 // Function to handle adding a subfolder
-                new ContentManagement().initializeContentManagement(2, folder.folderID)
+                new ContentManagement().initializeContentManagement(2, folder.folderID);
             });
 
             // Create a link for adding a document
@@ -587,7 +587,7 @@ class ViewFolderContent {
     }
 
     /**
-     * Method responsible for building the subfolders subpage.
+     * Method responsible for building the subfolders' subpage.
      * @param {Object} folderContent The JSON object representing the folder content.
      * @returns {HTMLElement} The HTML element representing the subfolders.
      */
@@ -814,6 +814,11 @@ class ViewDocumentDetails {
 
 // When the window is loaded, create an instance of the Orchestrator class.
 window.onload = function () {
-    const orchestrator = new Orchestrator();
-    orchestrator.init();
+    new User().checkAuthentication()
+        .then(() => {
+            new Orchestrator().init();
+        })
+        .catch(() => {
+            window.location.href = "authentication.html";
+        });
 };
