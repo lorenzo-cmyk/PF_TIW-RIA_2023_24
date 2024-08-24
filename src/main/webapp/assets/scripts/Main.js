@@ -217,6 +217,7 @@ class Homepage {
             // Create a link for the folder name
             const folderLink = document.createElement('a');
             folderLink.textContent = folder.folderName;
+            folderLink.style.textDecoration = "underline";
             folderLink.href = "#";
             folderLink.addEventListener('click', (event) => {
                 event.preventDefault();
