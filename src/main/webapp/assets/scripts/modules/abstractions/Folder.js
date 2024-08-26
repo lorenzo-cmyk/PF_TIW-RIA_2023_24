@@ -78,7 +78,7 @@ export default class Folder {
 
         // Perform the request to the API.
         return await this.apiInterface.doDELETE(
-            `folders/${folderId}`, null, 204
+            `folders/${folderId}`, null, 200
         );
     }
 
