@@ -191,6 +191,8 @@ class Homepage {
                 new Orchestrator().getPageContent().appendChild(pageSubtitle);
                 // Append the directory structure container to the page content.
                 new Orchestrator().getPageContent().appendChild(folderTree);
+                // Create the trash bin and append it to the page content.
+                new Orchestrator().getPageContent().appendChild(this.createTrashBin());
             })
             .catch((error) => {
                 // Set the message of the page.
@@ -267,6 +269,42 @@ class Homepage {
         });
 
         return folderTree;
+    }
+
+    /**
+     * Method responsible for creating the trash bin.
+     * @returns {HTMLElement} The HTML element representing the trash bin.
+     */
+    createTrashBin() {
+        // Create the trash bin container
+        const trashBinContainer = document.createElement('div');
+        // Create a horizontal rule for separation
+        const separator = document.createElement('hr');
+        trashBinContainer.appendChild(separator);
+        // Create a div for right-aligned content
+        const rightAlignedDiv = document.createElement('div');
+        rightAlignedDiv.className = "has-text-right";
+        // Create the trash bin label
+        const trashBinLabel = document.createElement('a');
+        trashBinLabel.className = "subtitle has-text-weight-medium is-6";
+        trashBinLabel.textContent = "Trash here → ";
+        // Create the trash bin icon
+        const trashBinIcon = document.createElement('span');
+        trashBinIcon.className = "subtitle is-3";
+        trashBinIcon.innerHTML = "🗑️";
+        // Assemble the components
+        trashBinLabel.appendChild(trashBinIcon);
+        rightAlignedDiv.appendChild(trashBinLabel);
+        trashBinContainer.appendChild(rightAlignedDiv);
+
+        // Add "click" event listener to the trash bin label
+        trashBinLabel.addEventListener('click', (event) => {
+            event.preventDefault();
+            alert("Drag and drop the folder or document you want to delete here.");
+            // TODO: Replace it with a modal window!
+        });
+
+        return trashBinContainer;
     }
 }
 
