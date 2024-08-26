@@ -81,6 +81,8 @@ class Orchestrator {
         const newActionLinkElement = document.createElement("a");
         // Set the text of the new action link element.
         newActionLinkElement.textContent = actionName;
+        // Prevent the default dragging behavior.
+        newActionLinkElement.draggable = false;
         // Append the new action link element to the new action element.
         newActionElement.appendChild(newActionLinkElement);
         // Append the new action element to the actions list.
@@ -239,6 +241,7 @@ class Homepage {
                 // Function to handle adding a subfolder
                 new ContentManagement().initializeContentManagement(2, folder.folderID);
             });
+            addSubfolderLink.draggable = false; // By default, links are draggable!
 
             // Create a link for adding a document
             const addDocumentLink = document.createElement('a');
@@ -248,6 +251,7 @@ class Homepage {
                 event.preventDefault();
                 new ContentManagement().initializeContentManagement(3, folder.folderID);
             });
+            addDocumentLink.draggable = false; // By default, links are draggable!
 
             // Append the links to the span element
             actionsSpan.appendChild(document.createTextNode(" -> "));
@@ -288,6 +292,7 @@ class Homepage {
         const trashBinLabel = document.createElement('a');
         trashBinLabel.className = "subtitle has-text-weight-medium is-6";
         trashBinLabel.textContent = "Trash here → ";
+        trashBinLabel.draggable = false; // By default, links are draggable!
         // Create the trash bin icon
         const trashBinIcon = document.createElement('span');
         trashBinIcon.className = "subtitle is-3";
