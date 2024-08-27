@@ -1,6 +1,7 @@
 import Folder from "./modules/abstractions/Folder.js";
 import Document from "./modules/abstractions/Document.js";
 import User from "./modules/abstractions/User.js";
+import ModalWindowsFactory from "./modules/utilities/ModalWindowsFactory.js";
 
 class Orchestrator {
 
@@ -322,8 +323,17 @@ class Homepage {
         // Add "click" event listener to the trash bin label
         trashBinLabel.addEventListener('click', (event) => {
             event.preventDefault();
-            alert("Drag and drop the folder or document you want to delete here.");
-            // TODO: Replace it with a modal window!
+            new ModalWindowsFactory().spawnModalWindow(
+                '🗑️ Trash Bin',
+                '<div class="has-text-centered">Drag and drop a folder or document here to delete it!</div>',
+                [
+                    {
+                        text: 'Ok',
+                        class: '',
+                        callback: () => {}
+                    }
+                ]
+            );
         });
         // Add "dragover" event listener to the trash bin label
         trashBinLabel.addEventListener("dragover", (event) => {
