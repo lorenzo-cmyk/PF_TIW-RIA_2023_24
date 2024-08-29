@@ -1,6 +1,7 @@
 import Folder from "./modules/abstractions/Folder.js";
 import Document from "./modules/abstractions/Document.js";
 import User from "./modules/abstractions/User.js";
+import ModalWindowsFactory from "./modules/utilities/ModalWindowsFactory.js";
 
 class Orchestrator {
 
@@ -227,6 +228,23 @@ class Homepage {
                 event.preventDefault();
                 new ViewFolderContent().initializeViewFolderContent(folder.folderID);
             });
+            // Encapsulate the folder ID in the data attribute
+            folderLink.addEventListener('dragstart', (event) => {
+                // 1. Set the drag data
+                event.dataTransfer.setData("folder/id", folder.folderID);
+                // 2. Set the drag feedback image
+                // 2.1. Create a folder icon from the emoji
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 30;
+                canvas.height = 30;
+                context.font = '20px serif';
+                context.fillText('📂', 0, 20);
+                const dragImage = new Image();
+                dragImage.src = canvas.toDataURL();
+                // 2.2. Set the drag image
+                event.dataTransfer.setDragImage(dragImage, 0, 0);
+            });
 
             // Create a span to wrap the "Add Subfolder / Add Document" links
             const actionsSpan = document.createElement('span');
@@ -305,8 +323,45 @@ class Homepage {
         // Add "click" event listener to the trash bin label
         trashBinLabel.addEventListener('click', (event) => {
             event.preventDefault();
-            alert("Drag and drop the folder or document you want to delete here.");
-            // TODO: Replace it with a modal window!
+            new ModalWindowsFactory().spawnModalWindow(
+                '🗑️ Trash Bin',
+                '<div class="has-text-centered">Drag and drop a folder or document here to delete it!</div>',
+                [
+                    {
+                        text: 'Ok',
+                        class: '',
+                        callback: () => {}
+                    }
+                ]
+            );
+        });
+        // Add "dragover" event listener to the trash bin label
+        trashBinLabel.addEventListener("dragover", (event) => {
+            const isValidData = event.dataTransfer.types.includes("folder/id") ||
+                event.dataTransfer.types.includes("document/id");
+            if (isValidData) {
+                event.preventDefault();
+            }
+        });
+        // Add "drop" event listener to the trash bin label
+        trashBinLabel.addEventListener("drop", (event) => {
+            const isFolder = event.dataTransfer.types.includes("folder/id");
+            const isDocument = event.dataTransfer.types.includes("document/id");
+            if ((isDocument && isFolder) || (!isDocument && !isFolder)) {
+                // Prevent inconsistent state.
+                return;
+            }
+            if (isFolder) {
+                new Folder().deleteFolder(event.dataTransfer.getData("folder/id"))
+                    .then(() => {
+                        new Homepage().initializeHomepage();
+                        new Orchestrator().setPageMessage("message is-success",
+                            "The folder was deleted successfully.");
+                    })
+                    .catch((error) => {
+                        new Orchestrator().setPageMessage("message is-danger", error.message);
+                    });
+            }
         });
 
         return trashBinContainer;
