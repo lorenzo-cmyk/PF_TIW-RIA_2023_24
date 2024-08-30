@@ -80,4 +80,31 @@ export default class Document {
             "documents/" + documentId, null, 200
         );
     }
+
+    /**
+     * Method used to move a document to a new folder.
+     * @param {int} documentId The id of the document to be moved.
+     * @param {int} newFolderId The id of the new folder.
+     */
+    async moveDocument(documentId, newFolderId) {
+        // Check the validity of the document provided data.
+        if (documentId <= -1) {
+            throw new Error("The document id provided is invalid. " +
+                "Please provide a valid document id and try again.");
+        }
+        if (newFolderId < -1) {
+            throw new Error("The new folder id provided is invalid. " +
+                "Please provide a valid new folder id and try again.");
+        }
+
+        // Prepare the request body.
+        const requestBody = JSON.stringify({
+            newFolderID: newFolderId
+        });
+
+        // Perform the request to the API.
+        return await this.apiInterface.doPOST(
+            "documents/" + documentId + "/move", requestBody, 200
+        );
+    }
 }
