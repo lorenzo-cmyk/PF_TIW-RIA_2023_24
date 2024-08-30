@@ -7,12 +7,15 @@ import Folder from "../abstractions/Folder.js";
 import Orchestrator from "./utilities/Orchestrator.js";
 import Homepage from "./Homepage.js";
 import ViewDocumentDetails from "./ViewDocumentDetails.js";
+import MoveDocumentModal from "./MoveDocumentModal.js";
 
 /**
  * Class responsible for the visualization of the content of a folder.
  * @class
  */
 export default class ViewFolderContent {
+
+    currentFolderID = -1;
 
     /**
      * Constructor of the ViewFolderContent class.
@@ -71,6 +74,7 @@ export default class ViewFolderContent {
                 // Add the logout action to the actions list.
                 new Orchestrator().addLogoutAction();
             });
+        this.currentFolderID = folderID;
     }
 
     /**
@@ -105,6 +109,8 @@ export default class ViewFolderContent {
                 event.preventDefault();
                 new ViewFolderContent().initializeViewFolderContent(subfolder.folderID);
             });
+            // We don't want the subfolder link to be draggable! Not in this page.
+            subfolderLink.draggable = false;
 
             // Append the subfolder name link to the li element
             subfolderItem.appendChild(subfolderLink);
@@ -151,6 +157,29 @@ export default class ViewFolderContent {
             documentLink.addEventListener('click', (event) => {
                 event.preventDefault();
                 new ViewDocumentDetails().initializeViewDocumentDetails(doc.documentID);
+            });
+
+            documentLink.addEventListener("dragstart", (event) => {
+                // 1. Set the drag data
+                event.dataTransfer.setData("document/id", doc.documentID);
+                // 2. Set the drag feedback image
+                // 2.1. Create a folder icon from the emoji
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 30;
+                canvas.height = 30;
+                context.font = '20px serif';
+                context.fillText('📄', 0, 20);
+                const dragImage = new Image();
+                dragImage.src = canvas.toDataURL();
+                // 2.2. Set the drag image
+                event.dataTransfer.setDragImage(dragImage, 0, 0);
+                // 3. Display the move document modal
+                new MoveDocumentModal().spawnModal(this.currentFolderID);
+            });
+            documentLink.addEventListener("dragend", (event) => {
+                event.preventDefault();
+                new MoveDocumentModal().removeModalWindow();
             });
 
             // Append the document name link to the li element
