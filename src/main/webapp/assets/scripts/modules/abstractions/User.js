@@ -5,8 +5,8 @@
  * It uses the Validators and APIInterface classes to perform its actions.
  * It is exported as a module to be used in other scripts.
  */
-import Validators from "../utilities/Validators.js";
-import APIInterface from "../utilities/APIInterface.js";
+import Validators from "./utilities/Validators.js";
+import APIInterface from "./utilities/APIInterface.js";
 
 /**
  * Class responsible for all the user-related actions.

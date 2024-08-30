@@ -1,7 +1,7 @@
 import Folder from "./modules/abstractions/Folder.js";
 import Document from "./modules/abstractions/Document.js";
 import User from "./modules/abstractions/User.js";
-import ModalWindowsFactory from "./modules/utilities/ModalWindowsFactory.js";
+import ModalWindowsFactory from "./modules/pages/utilities/ModalWindowsFactory.js";
 
 class Orchestrator {
 
