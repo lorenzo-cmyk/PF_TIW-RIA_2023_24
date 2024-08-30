@@ -1,5 +1,8 @@
 import Folder from "../abstractions/Folder.js";
 import Orchestrator from "./utilities/Orchestrator.js";
+import ModalWindowsFactory from "./utilities/ModalWindowsFactory.js";
+import ViewFolderContent from "./ViewFolderContent.js";
+import Document from "../abstractions/Document.js";
 
 export default class MoveDocumentModal {
 
@@ -172,7 +175,7 @@ export default class MoveDocumentModal {
         });
         folderLink.addEventListener("drop", (event) => {
             const isValidData = event.dataTransfer.types.includes("document/id");
-            if(isValidData) {
+            if (isValidData) {
                 event.preventDefault();
                 const documentID = event.dataTransfer.getData("document/id");
                 const folderID = folder.folderID;
@@ -182,7 +185,44 @@ export default class MoveDocumentModal {
         });
     }
 
+    /**
+     * Method used to handle the drop event.
+     * @param {int} documentID The ID of the document to be moved.
+     * @param {int} folderID The ID of the folder where the document will be moved.
+     */
     handleDrop(documentID, folderID) {
-        alert(`Document ID: ${documentID} will be moved to folder ID: ${folderID}`);
+        // Remove the modal window containing the folder structure.
+        this.removeModalWindow();
+        // Ask the user if he is sure about moving the document.
+        new ModalWindowsFactory().spawnModalWindow(
+            '↩️ Move Document',
+            '<div class="has-text-centered">Are you sure you want to move this document?</div>',
+            [
+                {
+                    text: 'Yes',
+                    class: 'is-warning',
+                    callback: () => {
+                        new Document().moveDocument(documentID, folderID)
+                            .then(() => {
+                                new ViewFolderContent().initializeViewFolderContent(folderID);
+                                // Set the message of the page.
+                                new Orchestrator().setPageMessage("message is-success",
+                                    "The document was successfully moved.");
+                            })
+                            .catch((error) => {
+                                // Set the message of the page.
+                                new Orchestrator().setPageMessage("message is-danger", error.message);
+                            });
+
+                    }
+                },
+                {
+                    text: 'No',
+                    class: '',
+                    callback: () => {
+                    }
+                }
+            ]
+        )
     }
 }
