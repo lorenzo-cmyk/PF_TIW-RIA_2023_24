@@ -211,35 +211,59 @@ export default class Homepage {
                 ]
             );
         });
+
         // Add "dragover" event listener to the trash bin label
         trashBinLabel.addEventListener("dragover", (event) => {
-            const isValidData = event.dataTransfer.types.includes("folder/id") ||
-                event.dataTransfer.types.includes("document/id");
+            const isValidData = event.dataTransfer.types.includes("folder/id")
             if (isValidData) {
                 event.preventDefault();
             }
         });
+
         // Add "drop" event listener to the trash bin label
         trashBinLabel.addEventListener("drop", (event) => {
-            const isFolder = event.dataTransfer.types.includes("folder/id");
-            const isDocument = event.dataTransfer.types.includes("document/id");
-            if ((isDocument && isFolder) || (!isDocument && !isFolder)) {
-                // Prevent inconsistent state.
-                return;
-            }
-            if (isFolder) {
-                new Folder().deleteFolder(event.dataTransfer.getData("folder/id"))
-                    .then(() => {
-                        new Homepage().initializeHomepage();
-                        new Orchestrator().setPageMessage("message is-success",
-                            "The folder was deleted successfully.");
-                    })
-                    .catch((error) => {
-                        new Orchestrator().setPageMessage("message is-danger", error.message);
-                    });
+            const isValidData = event.dataTransfer.types.includes("folder/id");
+            if (isValidData) {
+                event.preventDefault();
+                const folderID = event.dataTransfer.getData("folder/id");
+                this.askForDeleteConfirmation(folderID);
             }
         });
 
         return trashBinContainer;
+    }
+
+    /**
+     * Method responsible for asking the user for a delete confirmation
+     * @param folderID The ID of the folder to be deleted.
+     */
+    askForDeleteConfirmation(folderID) {
+        new ModalWindowsFactory().spawnModalWindow(
+            '🗑️ Delete Folder',
+            '<div class="has-text-centered">Are you sure you want to delete this folder?</div>',
+            [
+                {
+                    text: 'Yes',
+                    class: 'is-danger',
+                    callback: () => {
+                        new Folder().deleteFolder(folderID)
+                            .then(() => {
+                                new Homepage().initializeHomepage();
+                                new Orchestrator().setPageMessage("message is-success",
+                                    "The folder was deleted successfully.");
+                            })
+                            .catch((error) => {
+                                new Orchestrator().setPageMessage("message is-danger", error.message);
+                            });
+                    }
+                },
+                {
+                    text: 'No',
+                    class: '',
+                    callback: () => {
+                    }
+                }
+            ]
+        );
     }
 }
