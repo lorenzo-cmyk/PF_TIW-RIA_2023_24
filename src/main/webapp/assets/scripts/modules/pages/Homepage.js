@@ -205,7 +205,8 @@ export default class Homepage {
                     {
                         text: 'Ok',
                         class: '',
-                        callback: () => {}
+                        callback: () => {
+                        }
                     }
                 ]
             );
