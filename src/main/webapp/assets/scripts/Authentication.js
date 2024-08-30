@@ -289,7 +289,7 @@ class AuthenticationPage {
     }
 }
 
-window.onload = async function () {
+window.onload = function () {
     // Check if the user is already authenticated. If so, redirect to the index page.
     const user = new User();
     user.checkAuthentication()
