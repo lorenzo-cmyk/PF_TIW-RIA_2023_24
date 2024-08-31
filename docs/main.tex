@@ -126,4 +126,134 @@
         \textcolor{Green}{componenti di visualizzazione}, \textcolor{Blue}{eventi} e \textcolor{Orange}{azioni}.}
 \end{frame}
 
+\begin{frame}
+    \frametitle{Application Design - Components (1)}
+    \textbf{Sommario dei componenti:}
+    \begin{itemize}
+        \item \textcolor{Red}{authentication.html}: Pagina di registrazione e login.
+              \begin{itemize}
+                  \item \textcolor{Green}{Form di Login}: Form per il login.
+                  \item \textcolor{Green}{Bottone di Login}
+                        \begin{itemize}
+                            \item \textcolor{Blue}{(onClick)}: Esegue il login dell'utente.
+                        \end{itemize}
+                  \item \textcolor{Green}{Link di Registrazione}
+                        \begin{itemize}
+                            \item \textcolor{Blue}{(onClick)}: Mostra i componenti relativi alla registrazione
+                                  nascondendo quelli del login.
+                        \end{itemize}
+
+                  \item \textcolor{Green}{Form di Registrazione}: Form per la registrazione.
+                  \item \textcolor{Green}{Bottone di Registrazione}
+                        \begin{itemize}
+                            \item \textcolor{Blue}{(onClick)}: Esegue la registrazione dell'utente.
+                        \end{itemize}
+                  \item \textcolor{Green}{Link di Login}
+                        \begin{itemize}
+                            \item \textcolor{Blue}{(onClick)}: Mostra i componenti relativi al login
+                                  nascondendo quelli di registrazione.
+                        \end{itemize}
+              \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Design - Components (2)}
+    \textbf{\textcolor{Red}{index.html}}: Pagina principale dell'applicazione.
+    \begin{itemize}
+        \item \textcolor{Green}{"Directory Structure"}: Albero delle cartelle dell'utente.
+              \begin{itemize}
+                  \item \textcolor{Blue}{(onClick)}: Mostra il contenuto (cartelle e documenti) della cartella
+                        selezionata.
+                  \item \textcolor{Blue}{(onDragStart)}: Inizia il trascinamento di una cartella o documento.
+              \end{itemize}
+
+        \item \textcolor{Purple}{Bottoni di Aggiunta}:
+              \begin{itemize}
+                  \item \textcolor{Green}{"Add New Folder"}: Bottone per aggiungere una nuova cartella di primo livello.
+                        \begin{itemize}
+                            \item \textcolor{Blue}{(onClick)}: Mostra un \textcolor{Green}{campo di input} per
+                                  l'inserimento del nome della cartella da aggiungere.
+                        \end{itemize}
+                  \item \textcolor{Green}{"Add Subfolder"}: Bottone per aggiungere una sottocartella.
+                        Uno per ogni cartella.
+                        \begin{itemize}
+                            \item \textcolor{Blue}{(onClick)}: Mostra un \textcolor{Green}{campo di input} per
+                                  l'inserimento del nome della sottocartella da aggiungere.
+                        \end{itemize}
+                  \item \textcolor{Green}{"Add Document"}: Bottone per aggiungere un documento.
+                        Uno per ogni cartella.
+                        \begin{itemize}
+                            \item \textcolor{Blue}{(onClick)}: Mostra una \textcolor{Green}{form di input} per
+                                  l'inserimento dei dati del documento da aggiungere.
+                        \end{itemize}
+              \end{itemize}
+
+        \item \textcolor{Green}{Cestino}: Cestino in cui trascinare le cartelle o i documenti per eliminarli.
+              \begin{itemize}
+                  \item \textcolor{Blue}{(onDrop)}: Mostra la finestra modale di conferma per la cancellazione
+                        ("Confirm Deletion").
+              \end{itemize}
+
+        \item \textcolor{Green}{Finestra Modale - "Confirm Deletion"}: Finestra modale di conferma per
+              la cancellazione.
+              \begin{itemize}
+                  \item \textcolor{Blue}{(onClick)}\textrightarrow \textcolor{Green}{Bottone "Confirm"}:
+                        Elimina definitivamente l'elemento.
+                  \item \textcolor{Blue}{(onClick)}\textrightarrow \textcolor{Green}{Bottone "Cancel"}:
+                        Chiude la finestra modale senza effettuare la cancellazione.
+              \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Design - Components (3)}
+    \begin{itemize}
+        \item \textcolor{Green}{Lista Subfolder}: Lista delle sottocartelle di una cartella.
+              \begin{itemize}
+                  \item \textcolor{Blue}{(onClick)}: Mostra il contenuto (cartelle e documenti) della
+                        sottocartella selezionata.
+              \end{itemize}
+
+        \item \textcolor{Green}{Lista Documenti}: Lista dei documenti di una cartella.
+              \begin{itemize}
+                  \item \textcolor{Blue}{(onClick)}: Mostra i dettagli del documento selezionato.
+                  \item \textcolor{Blue}{(onDragStart)}: Mostra una finestra modale con la lista delle cartelle
+                        in cui è possibile spostare il documento nonché il cestino.
+              \end{itemize}
+
+        \item \textcolor{Green}{Finestra Modale - "Move Document"}: Finestra modale per lo spostamento di un documento:
+              contiene la lista delle cartelle dell'utente e il cestino.
+              \begin{itemize}
+                  \item \textcolor{Blue}{(onDrop)}\textrightarrow \textcolor{Green}{Subfolder}:
+                        Mostra la finestra modale di conferma per lo spostamento del documento.
+                  \item \textcolor{Blue}{(onDrop)}\textrightarrow \textcolor{Green}{Cestino}:
+                        Mostra la finestra modale di conferma per la cancellazione del documento.
+              \end{itemize}
+
+        \item \textcolor{Green}{Finestra Modale - "Confirm Move"}: Finestra modale di conferma per lo spostamento
+              di un documento.
+              \begin{itemize}
+                  \item \textcolor{Blue}{(onClick)}\textrightarrow \textcolor{Green}{Bottone "Confirm"}:
+                        Sposta il documento nella cartella selezionata.
+                  \item \textcolor{Blue}{(onClick)}\textrightarrow \textcolor{Green}{Bottone "Cancel"}:
+                        Chiude la finestra modale senza effettuare lo spostamento.
+              \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Design - Components (4)}
+    \begin{itemize}
+        \item \textcolor{Green}{Form di Dettaglio Documento}: Form per la visualizzazione dei dettagli di un documento.
+
+        \item \textcolor{Purple}{Bottoni di Navigazione}:
+              \begin{itemize}
+                  \item \textcolor{Green}{"Go Back"}: Bottone per tornare alla visualizzazione precedente.
+                  \item \textcolor{Green}{"Home"}: Bottone per tornare alla visualizzazione della struttura cartelle.
+                  \item \textcolor{Green}{"Logout"}: Bottone per effettuare il logout dall'applicazione.
+              \end{itemize}
+    \end{itemize}
+\end{frame}
+
 \end{document}
