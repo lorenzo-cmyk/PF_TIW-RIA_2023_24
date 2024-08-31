@@ -127,6 +127,16 @@
 \end{frame}
 
 \begin{frame}
+    \frametitle{Application Design - Components (0)}
+    L'idea di questo sommario è quella di presentare i componenti UI del frontend dell'applicazione con cui l'utente
+    può interagire e le relazioni tra di questi.\\
+    I componenti sono sempre visibili o meno all'utente sempre in maniera coerente con il contesto in cui si trova.
+    Eventuali hide/show impliciti dei componenti sono stati omessi per brevità.\\
+    Le azioni compiute dall'applicazione saranno descritte con maggiore dettaglio nelle prossime slide e sono qui
+    per rendere maggiormente chiaro il ruolo che ogni componente UI svolge.\\
+\end{frame}
+
+\begin{frame}
     \frametitle{Application Design - Components (1)}
     \textbf{Sommario dei componenti:}
     \begin{itemize}
@@ -254,6 +264,75 @@
                   \item \textcolor{Green}{"Logout"}: Bottone per effettuare il logout dall'applicazione.
               \end{itemize}
     \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Design - IFML Diagram}
+    % TODO: Add IFML diagram later.
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Architecture - Server Side (1)}
+    \begin{itemize}
+        \item A livello server, l'applicazione condivide BEANs, DAOs e utility varie con la versione HTML del DMS.
+        \item I controller, invece, sono stati riscritti in modo da presentare al client un'interfaccia RESTful.
+        \item Il corpo di richieste e risposte - qualora necessario - è in formato sempre in formato JSON.
+              \begin{itemize}
+                  \item Le risposte JSON sono generate dal server a partire da oggetti Java (DTO) serializzati sfruttando
+                        la libreria GSON di Google.
+              \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Architecture - Server Side (2)}
+    \begin{table}[h!]
+        \centering
+        \scriptsize
+        \resizebox{\textwidth}{!}{
+            \begin{tabular}{|l|l|l|l|}
+                \hline
+                \textbf{Controller}                 & \textbf{Metodo} & \textbf{URL}                       & \textbf{Azione}                                               \\ \hline
+                \textbf{CheckAuthenticationServlet} & GET             & /api/auth/check                    & Verifica se l'utente è autenticato.                           \\ \hline
+                \textbf{UserAuthenticationServlet}  & POST            & /api/auth/login                    & Consente il login dell'utente.                                \\ \hline
+                \textbf{UserDisconnectionServlet}   & DELETE          & /api/auth/logout                   & Consente il logout dell'utente.                               \\ \hline
+                \textbf{UserRegistrationServlet}    & POST            & /api/auth/register                 & Consente la registrazione di un utente,                       \\ \hline
+                \textbf{DocumentServlet}            & GET             & /api/documents/\{documentID\}      & Consente di ottenere le informazioni relative a un documento. \\ \hline
+                \textbf{DocumentServlet}            & DELETE          & /api/documents/\{documentID\}      & Consente l'eliminazione di un documento.                      \\ \hline
+                \textbf{DocumentServlet}            & POST            & /api/documents/\{documentID\}/move & Consente di spostare un documento in una nuova cartella.      \\ \hline
+                \textbf{DocumentsServlet}           & POST            & /api/documents                     & Consente di creare un nuovo documento.                        \\ \hline
+                \textbf{FolderServlet}              & GET             & /api/folders/\{folderID\}          & Consente di ottenere le informazioni relative a una cartella. \\ \hline
+                \textbf{FolderServlet}              & DELETE          & /api/folders/\{folderID\}          & Consente l'eliminazione di una cartella.                      \\ \hline
+                \textbf{FoldersServlet}             & GET             & /api/folders                       & Consente di ottenere l'albero delle directory dell'utente.    \\ \hline
+                \textbf{FoldersServlet}             & POST            & /api/folders                       & Consente di creare una nuova cartella.                        \\ \hline
+            \end{tabular}
+        }
+    \end{table}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Architecture - Client Side (1)}
+    \begin{columns}
+        \begin{column}{0.3\textwidth}
+            \centering
+            \includegraphics[height=0.8\textheight,keepaspectratio]{files.png}
+        \end{column}
+        \begin{column}{0.7\textwidth}
+            La classe \texttt{APIInterface} gestisce la comunicazione client-server. Su questa si basano le classi
+            \texttt{Document}, \texttt{Folder} e \texttt{User}, che rappresentano le risorse remote.
+            Queste classi usano \texttt{Validators} per controllare i dati inseriti dall'utente prima dell'invio
+            al server svolgendo quindi l'attività di client-side validation.\\
+
+            Le classi \texttt{Homepage}, \texttt{ContentManagement}, \texttt{ViewFolderContent},
+            \texttt{ViewDocumentDetails} e \texttt{MoveDocumentModal} sono classi singleton che rappresentano i
+            componenti UI dell'applicazione. Questi moduli sono gestiti da \texttt{Orchestrator} che si occupa di
+            gestire le interazioni tra di essi.\\
+
+            \texttt{ModalWindowsFactory} è una semplice utility per la creazione di finestre modali.
+            \texttt{Authentication} e \texttt{Main} sono gli entry point dell'applicazioni e sono referenziati nei
+            rispettivi file HTML.
+        \end{column}
+    \end{columns}
 \end{frame}
 
 \end{document}
