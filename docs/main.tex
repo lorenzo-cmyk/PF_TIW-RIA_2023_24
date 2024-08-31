@@ -259,9 +259,12 @@
 
         \item \textcolor{Purple}{Bottoni di Navigazione}:
               \begin{itemize}
-                  \item \textcolor{Green}{"Go Back"}: Bottone per tornare alla visualizzazione precedente.
-                  \item \textcolor{Green}{"Home"}: Bottone per tornare alla visualizzazione della struttura cartelle.
-                  \item \textcolor{Green}{"Logout"}: Bottone per effettuare il logout dall'applicazione.
+                  \item \textcolor{Blue}{(onClick)}\textrightarrow \textcolor{Green}{"Go Back"}:
+                        Ripristina l'applicazione alla vista precendente.
+                  \item \textcolor{Blue}{(onClick)}\textrightarrow \textcolor{Green}{"Home"}:
+                        Ripristina l'applicazione alla vista iniziale.
+                  \item \textcolor{Blue}{(onClick)}\textrightarrow \textcolor{Green}{"Logout"}:
+                        Esegue il logout dell'utente.
               \end{itemize}
     \end{itemize}
 \end{frame}
@@ -333,6 +336,72 @@
             rispettivi file HTML.
         \end{column}
     \end{columns}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Architecture - Events\&Actions (1)}
+    \textbf{authentication.html:}
+    \begin{table}[h!]
+        \centering
+        \scriptsize
+        \resizebox{\textwidth}{!}{
+            \begin{tabular}{|ll|ll|}
+                \hline
+                \multicolumn{2}{|c|}{{\textbf{Client}}}                      & \multicolumn{2}{c|}{{\textbf{Server}}}                                                                                                                         \\ \hline
+                \multicolumn{1}{|l|}{{\textbf{Evento}}}                      & {\textbf{Azione}}                                       & \multicolumn{1}{l|}{{\textbf{Evento}}}                                     & {\textbf{Azione}}       \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Login Button}}        & Validazione Input                                       & \multicolumn{1}{l|}{POST(Username, Password)}                              & Validazione credenziali \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Registration Link}}   & Mostra form di registrazione. Nasconde quello di login. & \multicolumn{1}{l|}{-}                                                     & -                       \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Registration Button}} & Validazione input                                       & \multicolumn{1}{l|}{POST(Username, Password, PasswordConfirmation, Email)} & Registrazione utente    \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Login Link}}          & Mostra form di login. Nasconde quello di registrazione. & \multicolumn{1}{l|}{-}                                                     & -                       \\ \hline
+            \end{tabular}
+        }
+    \end{table}
+    \textbf{index.html:}
+    \begin{table}[h!]
+        \centering
+        \scriptsize
+        \resizebox{\textwidth}{!}{
+            \begin{tabular}{|ll|ll|}
+                \hline
+                \multicolumn{2}{|c|}{{\textbf{Client}}}                      & \multicolumn{2}{c|}{{\textbf{Server}}}                                                                                                                 \\ \hline
+                \multicolumn{1}{|l|}{{\textbf{Evento}}}                      & {\textbf{Azione}}                                   & \multicolumn{1}{l|}{{\textbf{Evento}}}                         & {\textbf{Azione}}               \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onLoad) Homepage}}             & Mostra Directory Structure all'utente               & \multicolumn{1}{l|}{GET(-)}                                    & Ottiene cartelle utente.        \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Directory Structure}} & Mostra contenuto cartella.                          & \multicolumn{1}{l|}{GET(FolderID)}                             & Ottieni contenuto cartella.     \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Add New Folder}}      & Aggiunge nuova cartella di primo livello.           & \multicolumn{1}{l|}{POST(FolderName)}                          & Crea cartella di primo livello. \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Add Subfolder}}       & Aggiunge nuova sottocartella.                       & \multicolumn{1}{l|}{POST(FolderName, ParentFolderID)}          & Crea sottocartella.             \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Add Document}}        & Aggiunge nuovo documento.                           & \multicolumn{1}{l|}{POST(Name, Type, Summary, ParentFolderID)} & Crea documento.                 \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onDrop) Trash Bin}}            & Mostra finestra modale di conferma.                 & \multicolumn{1}{l|}{-}                                         & -                               \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Confirm Deletion}}    & Cancella l'elemento fornito (cartella o documento). & \multicolumn{1}{l|}{DELETE(FolderID) OR DELETE(DocumentID)}    & Cancella l'elemento richiesto.  \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Cancel Deletion}}     & Chiude la finestra modale.                          & \multicolumn{1}{l|}{-}                                         & -                               \\ \hline
+            \end{tabular}
+        }
+    \end{table}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Architecture - Events\&Actions (2)}
+    \textbf{index.html:}
+    \begin{table}[h!]
+        \centering
+        \scriptsize
+        \resizebox{\textwidth}{!}{
+            \begin{tabular}{|ll|ll|}
+                \hline
+                \multicolumn{2}{|c|}{{\textbf{Client}}}                 & \multicolumn{2}{c|}{{\textbf{Server}}}                                                                                                                      \\ \hline
+                \multicolumn{1}{|l|}{{\textbf{Evento}}}                 & {\textbf{Azione}}                                          & \multicolumn{1}{l|}{{\textbf{Evento}}}             & {\textbf{Azione}}                         \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Subfolder}}      & Mostra contenuto cartella.                                 & \multicolumn{1}{l|}{GET(FolderID)}                 & Ottieni contenuto cartella.               \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Document}}       & Mostra dettagli documento.                                 & \multicolumn{1}{l|}{GET(DocumentID)}               & Ottieni dettagli documento.               \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onDragStart) Document}}   & Mostra finestra modale con possibili taget di spostamento. & \multicolumn{1}{l|}{GET(-)}                        & Ottiene cartelle utente.                  \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onDrop) Subfolder}}       & Mostra finestra modale di conferma spostamento.            & \multicolumn{1}{l|}{-}                             & -                                         \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Confirm Move}}   & Sposta il documento nella nuova cartella.                  & \multicolumn{1}{l|}{POST(DocumentID, NewFolderID)} & Sposta il documento nella nuova cartella. \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Cancel Move}}    & Chiude la finestra modale.                                 & \multicolumn{1}{l|}{-}                             & -                                         \\ \hline
+                \multicolumn{1}{|l|}{\textbf{}}                         &                                                            & \multicolumn{1}{l|}{}                              &                                           \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Go Back Button}} & Ripristina l'applicazione alla vista precendente.          & \multicolumn{1}{l|}{-}                             & -                                         \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClick) Home Button}}    & Ripristina l'applicazione alla vista iniziale.             & \multicolumn{1}{l|}{-}                             & -                                         \\ \hline
+                \multicolumn{1}{|l|}{\textbf{(onClicK) Logout}}         & Esegue il logout dell'utente.                              & \multicolumn{1}{l|}{DELETE(-)}                     & Invalida la sessione dell'utente.         \\ \hline
+            \end{tabular}
+        }
+    \end{table}
 \end{frame}
 
 \end{document}
