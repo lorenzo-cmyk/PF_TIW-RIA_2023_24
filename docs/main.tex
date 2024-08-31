@@ -1,0 +1,129 @@
+\documentclass[aspectratio=169]{beamer}
+
+\setbeamertemplate{navigation symbols}{}
+\usetheme{Boadilla}
+\usepackage[italian]{babel}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{minted}
+\usepackage{calc} 
+
+\title{Gestione Documenti - Versione RIA}
+\author{Lorenzo Chiroli (C.P. 10797603 - MTR. 981392)}
+\date{Gruppo N. 120}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+    \frametitle{Specification and Optional Additions - 1}
+    \textbf{Specifiche generali:}\\
+    Per rendere la documentazione maggiormente concisa, si è deciso di non ripetere inutilmente le specifiche
+    "generali" - già trattate nei lucidi relativi alla versione "Pure HTML" - e di concentrarsi solamente sulle
+    differenze proprie della versione RIA.\\
+
+    \textbf{Specifiche aggiuntive:}
+    \begin{itemize}
+        \item L'applicazione supporta registrazione e login mediante una pagina pubblica con opportune
+              form. La registrazione controlla la validità sintattica dell'indirizzo di email e l'uguaglianza
+              tra i campi "password" e "ripeti password", anche a lato client. La registrazione controlla
+              l'unicità dello username.
+        \item Dopo il login dell'utente, l'intera applicazione è realizzata con un'unica pagina.
+        \item Ogni interazione dell'utente è gestita senza ricaricare completamente la pagina, ma produce
+              l'invocazione asincrona del server e l'eventuale modifica del contenuto da aggiornare a
+              seguito dell'evento.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Specification and Optional Additions - 2}
+    \begin{itemize}
+        \item Errori a lato server devono essere segnalati mediante un messaggio di allerta all'interno
+              della pagina.
+        \item La funzione di creazione di una sottocartella è realizzata nella pagina HOME mediante un
+              bottone AGGIUNGI SOTTOCARTELLA posto di fianco ad ogni cartella. La pressione del
+              bottone fa apparire un campo di input per l'inserimento del nome della cartella da inserire.
+        \item La funzione di creazione di un documento è realizzata nella pagina HOME mediante un
+              bottone AGGIUNGI DOCUMENTO posto di fianco ad ogni cartella. La pressione del
+              bottone fa apparire una form di input per l'inserimento dei dati del documento.
+        \item Si aggiunge una cartella denominata "cestino". Il drag and drop di un documento o di una
+              cartella nel cestino comporta la cancellazione. Prima di inviare il comando di cancellazione
+              al server l'utente vede una finestra modale di conferma e può decidere se annullare
+              l'operazione o procedere. La cancellazione di una cartella comporta la cancellazione
+              integrale e ricorsiva del contenuto dalla base di dati (documenti e cartelle).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Specification and Optional Additions - 3}
+    \begin{itemize}
+        \item La funzione di spostamento di un documento è realizzata mediante drag and drop.
+    \end{itemize}
+    \vspace{0.4cm}
+    Per implementare questa funzionalità si è deciso di:
+    \begin{enumerate}
+        \item Nella homepage viene aggiunto un cestino in cui è possibile trascinare le cartelle per eliminarle.
+        \item Nella vista "contenuto" di una cartella, quando l'utente inizia il trascinamento di un documento,
+              viene visualizzata - in una "finestra modale" - la lista delle cartelle in cui è possibile spostare il
+              documento (tra cui anche il cestino). La directory structure viene subito nascosta se l'utente annulla
+              il drag\&drop rilasciando il documento.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Data Requirements Analysis - Database Design - Database Schema}
+    \begin{itemize}
+        \item La struttura della base di dati è identica a quella della versione "Pure HTML".
+        \item A onore del vero, tutta la "buisness logic" server-side - Bean, DAO e utility varie - è stata mantentura
+              inalterata e viene gestita come submodule comune a tutte le versioni del DMS per evitare ridondanze nella
+              codebase.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Requirements Analysis - 1}
+    \begin{itemize}
+        \item L'applicazione supporta \textcolor{Blue}{registrazione} e \textcolor{Blue}{login} mediante una
+              \underline{pagina pubblica} [rif. a \textcolor{Red}{authentication.html}] con
+              \textcolor{Green}{opportune form}. La registrazione \textcolor{Orange}{controlla la validità sintattica
+                  dell'indirizzo di email e l'uguaglianza tra i campi "password" e "ripeti password", anche a lato client}.
+              La registrazione \textcolor{Orange}{controlla l’unicità dello username}.
+        \item Dopo il \textcolor{Blue}{login} dell'utente, l'intera applicazione è realizzata con un'
+              \underline{unica pagina} [rif. a \textcolor{Red}{index.html}].
+        \item Ogni interazione dell'utente è gestita senza ricaricare completamente la pagina, ma produce
+              l'invocazione asincrona del server e l'eventuale modifica del contenuto da aggiornare a
+              seguito dell'evento.
+        \item Errori a lato server devono essere segnalati mediante un \textcolor{Green}{messaggio di allerta}
+              all'interno della pagina.
+        \item La funzione di \textcolor{Orange}{spostamento di un documento} è realizzata mediante
+              \textcolor{Blue}{drag and drop}.
+    \end{itemize}
+    \footnotetext{I colori hanno il seguente significato: \textcolor{Red}{pagine},
+        \textcolor{Green}{componenti di visualizzazione}, \textcolor{Blue}{eventi} e \textcolor{Orange}{azioni}.}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Requirements Analysis - 2}
+    \begin{itemize}
+        \item La funzione di \textcolor{Orange}{creazione di una sottocartella} è realizzata nella
+              \underline{pagina HOME} [\textcolor{Red}{index.html}] mediante un
+              \textcolor{Green}{bottone AGGIUNGI SOTTOCARTELLA} posto di fianco ad ogni cartella. La
+              \textcolor{Blue}{pressione del bottone} \textcolor{Orange}{fa apparire} un
+              \textcolor{Green}{campo di input} per l'inserimento del nome della cartella da inserire.
+        \item La funzione di \textcolor{Orange}{creazione di un documento} è realizzata nella
+              \underline{pagina HOME} [\textcolor{Red}{index.html}] mediante un
+              \textcolor{Green}{bottone AGGIUNGI DOCUMENTO} posto di fianco ad ogni cartella.
+              La \textcolor{Blue}{pressione del bottone} \textcolor{Orange}{fa apparire}
+              una \textcolor{Green}{form di input} per l'inserimento dei dati del documento.
+        \item Si aggiunge una \textcolor{Green}{cartella denominata "cestino"}. Il
+              \textcolor{Blue}{drag and drop di un documento o di una cartella nel cestino} comporta
+              \textcolor{Orange}{la cancellazione}. Prima di
+              \textcolor{Orange}{inviare il comando di cancellazione al server} l'utente vede una
+              \textcolor{Green}{finestra modale di conferma} e può
+              \textcolor{Blue}{decidere se annullare l'operazione o procedere}. La cancellazione di una cartella
+              comporta la cancellazione integrale e ricorsiva del contenuto dalla base di dati (documenti e cartelle).
+    \end{itemize}
+    \footnotetext{I colori hanno il seguente significato: \textcolor{Red}{pagine},
+        \textcolor{Green}{componenti di visualizzazione}, \textcolor{Blue}{eventi} e \textcolor{Orange}{azioni}.}
+\end{frame}
+
+\end{document}
