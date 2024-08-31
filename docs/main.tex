@@ -271,7 +271,28 @@
 
 \begin{frame}
     \frametitle{Application Design - IFML Diagram}
-    % TODO: Add IFML diagram later.
+    \begin{itemize}
+        \item Al fine di rendere i diagrammi IFML più leggibili si è scelto di dividere la loro presentazione in
+        più slides distinte. La soprapposizione di questi rappresenta il flusso applicativo nella sua interezza.
+        \item I diagrammi IFML sono stati "semplificati" omettendo azioni banali come "mostra elemento X" che viene 
+        sottointeso dalla presenza di un collegamento tra due componenti.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Design - IFML Diagram (authenticaion.html)}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\linewidth]{Resources/IFMLs/images/authentication.html.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Design - IFML Diagram (index.html)}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.7\linewidth]{Resources/IFMLs/images/index.html.png}
+    \end{figure}
 \end{frame}
 
 \begin{frame}
@@ -318,7 +339,7 @@
     \begin{columns}
         \begin{column}{0.3\textwidth}
             \centering
-            \includegraphics[height=0.8\textheight,keepaspectratio]{files.png}
+            \includegraphics[height=0.8\textheight,keepaspectratio]{Resources/JSFiles.png}
         \end{column}
         \begin{column}{0.7\textwidth}
             La classe \texttt{APIInterface} gestisce la comunicazione client-server. Su questa si basano le classi
