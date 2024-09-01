@@ -1,0 +1,36 @@
+title Event: Drop document into a folder
+
+User->ViewFolderContent.js: The user starts dragging a document.
+ViewFolderContent.js->MoveDocumentModal.js: spawnModal(currentFolderID)
+MoveDocumentModal.js->MoveDocumentModal.js: buildDirectoryStructure()
+MoveDocumentModal.js->FoldersServlet: The method get - using an AJAX GET request - the user's folders. The process is the same as what happens during the Homepage loading.
+FoldersServlet-->MoveDocumentModal.js: User's folders.
+MoveDocumentModal.js-->User: The user now can drop the document inside a folder or into the trash bin.
+alt User cancels the drag&drop
+MoveDocumentModal.js->MoveDocumentModal.js: removeModalWindow()
+MoveDocumentModal.js-->User: The modal window is closed. The user can continue to interact with the folder's content as it wish.
+else User drops the document into the trash bin
+MoveDocumentModal.js->ModalWindowsFactory.js: A modal window for confirming the action is created. The process is the same as previously described.
+ModalWindowsFactory.js-->User: The user can choose to confirm the deletion or not.
+else User drops the document into a folder
+MoveDocumentModal.js->MoveDocumentModal.js: removeModalWindow()
+MoveDocumentModal.js->ModalWindowsFactory.js: spawnModalWindow("Are you sure you want to move this document?", ...)
+ModalWindowsFactory.js-->User: The user needs to choose if it really wants to move the document.
+alt User cancels the move.
+ModalWindowsFactory.js->ModalWindowsFactory.js: removeModalWindow()
+ModalWindowsFactory.js-->User: The modal window is closed and the user can continue to interact with the folder's content.
+else User confirm the move.
+ModalWindowsFactory.js->Document.js: moveDocument(documentID, newFolderID)
+Document.js->Document.js: JSONObject = JSON.stringify({newFolderId});
+Document.js->apiInterface.js: doPOST("documents/documentID/move", JSONObject, 200)
+apiInterface.js->DocumentServlet: AJAX POST()
+DocumentServlet->DocumentDAO: moveDocument(documentID, newFolderID)
+DocumentDAO-->DocumentServlet:
+DocumentServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->Document.js:
+Document.js-->ModalWindowsFactory.js:
+ModalWindowsFactory.js->ModalWindowsFactory.js: removeModalWindow()
+ModalWindowsFactory.js->ViewFolderContent.js: initializeViewFolderContent(folderID)
+ViewFolderContent.js-->User: The user now sees the content of the folder where the document was moved into.
+end
+end

@@ -273,10 +273,10 @@
     \frametitle{Application Design - IFML Diagram}
     \begin{itemize}
         \item Al fine di rendere i diagrammi IFML più leggibili si è scelto di dividere la loro presentazione in
-        più slides distinte. La soprapposizione di questi rappresenta il flusso applicativo nella sua interezza.
-        \item I diagrammi IFML sono stati "semplificati" omettendo azioni banali come "mostra elemento X" che viene 
-        sottointeso dalla presenza di un collegamento tra due componenti.
-\end{itemize}
+              più slides distinte. La soprapposizione di questi rappresenta il flusso applicativo nella sua interezza.
+        \item I diagrammi IFML sono stati "semplificati" omettendo azioni banali come "mostra elemento X" che viene
+              sottointeso dalla presenza di un collegamento tra due componenti.
+    \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -423,6 +423,86 @@
             \end{tabular}
         }
     \end{table}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Application Design - Sequence Diagrams}
+    \begin{itemize}
+        \item I sequence diagrams qui riportati rappresentano il flusso di interazione tra i componenti
+              dell'applicazione in risposta a determinati eventi.
+        \item I diagrammi sono stati "semplificati" in modo da mostrare solamente le azioni più rilevanti per
+              ogni dato evento preso in considerazione. Maggiore dettaglio nel funzionamento di DAO e Bean è
+              disponibile nei luici riguardo la versione "Pure HTML" dell'applicazione; qui il focus è 
+              maggiormente sulle interazioni client-server e tra i componenti UI.
+        \item La gestione degli errori è stata omessa per brevità: ciò che l'applicazione fà in caso in cui
+              riceva una risposta d'errore dal server è semplicemente mostrare il messaggio all'utente (in maniera
+              coerente con lo stato dell'applicazione).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/User Registration.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/User Login.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/Homepage Load.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/View Folder Content.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/New Object Creation.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/Folder Dropped In Trash Bin.png}
+    \end{figure}
+\end{frame}
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/Show Document Details.png}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}
+    \begin{figure}
+        \centering
+        \includegraphics[width=\dimexpr 0.95\paperwidth\relax, height=\dimexpr 0.90\paperheight\relax,
+            keepaspectratio]{Resources/SequenceDiagrams/images/Drop Document into a Folder.png}
+    \end{figure}
 \end{frame}
 
 \end{document}

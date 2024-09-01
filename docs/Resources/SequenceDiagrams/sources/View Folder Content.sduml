@@ -1,0 +1,20 @@
+title Event: Show Folder Content
+
+User->Homepage.js: Click on a folder
+Homepage.js->ViewFolderContent.js: initializeViewFolderContent(folderID)
+ViewFolderContent.js->Orchestrator.js: setPageTitle(...)
+ViewFolderContent.js->Orchestrator.js: setTabTitle(...)
+ViewFolderContent.js->Folder.js: retrieveFolderContents(folderID)
+Folder.js->apiInterface.js: doGET("folders/folderID", null, 200)
+apiInterface.js->FolderServlet: AJAX GET()
+FolderServlet->FolderDAO: myFolder = getFolderByID(folderID)
+FolderServlet->FolderDAO: mySubfolders = getSubfolders(folderID)
+FolderServlet->DocumentDAO: myDocuments = getDocumentsByFolder(folderID)
+FolderServlet->FolderServlet: JsonResponse = Pack all the data got from the DAOs into a JSON object
+FolderServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->Folder.js:
+Folder.js-->ViewFolderContent.js: 
+ViewFolderContent.js->ViewFolderContent.js: HTMLElementSubfolders = JSONtoSubfolders(response)
+ViewFolderContent.js->ViewFolderContent.js: HTMLElementDocuments = JSONtoDocuments(response)
+ViewFolderContent.js->Orchestrator.js: getPageContent().appendChild(HTMLElementSubfolders)
+ViewFolderContent.js->Orchestrator.js: getPageContent().appendChild(HTMLElementDocuments)

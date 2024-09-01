@@ -1,0 +1,21 @@
+title Event: User Login
+
+User->Authentication.js: Click on "Login"
+Authentication.js->User.js: loginUser(username, password)
+User.js->Validators.js: validateUsername(username)
+User.js->Validators.js: validatePassword(password)
+User.js->User.js: JsonObject = JSON.stringify({username, password})
+User.js->apiInterface.js: doPost("auth/login", JsonObject, 200)
+apiInterface.js->UserAuthenticationServlet: AJAX POST(JsonObject)
+UserAuthenticationServlet->UserDAO: authenticateUser(username, password)
+UserDAO-->UserAuthenticationServlet: return authenticatedUser
+UserAuthenticationServlet->Session: setAttribute("user", authenticatedUser)
+UserAuthenticationServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->User.js:
+User.js-->Authentication.js:
+alt Status === 200
+Authentication.js->Window: location.href = "index.html"
+else Status !== 200
+Authentication.js->Authentication.js: setPageMessage("message is-danger", error.message)
+end
+

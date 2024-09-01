@@ -1,0 +1,25 @@
+title Event: User Registration
+
+
+User->Authentication.js: Click on "Register"
+Authentication.js->User.js: createUser(username, email, password, passwordConfirmation)
+User.js->Validators.js: validateUsername(username)
+User.js->Validators.js: validateEmail(email)
+User.js->Validators.js: validatePassword(password, passwordConfirmation)
+User.js->User.js: JsonObject = JSON.stringify({username, email, password, passwordConfirmation})
+User.js->apiInterface.js: doPost("auth/register", JsonObject, 201)
+apiInterface.js->UserRegistrationServlet: AJAX POST(JsonObject)
+UserRegistrationServlet->Validators: validatePassword(password, passwordConfirmation)
+UserRegistrationServlet->UserBean: newUser = new User(username, password, email)
+UserBean-->UserRegistrationServlet: newUser
+UserRegistrationServlet->UserDAO: registerUser(newUser)
+UserDAO-->UserRegistrationServlet:
+UserRegistrationServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->User.js:
+User.js-->Authentication.js: 
+
+alt Status === 201
+Authentication.js->Authentication.js: setPageMessage("message is-success", "The registration was successful!")
+else Status !== 201
+Authentication.js->Authentication.js:setPageMessage("message is-danger", error.message)
+end

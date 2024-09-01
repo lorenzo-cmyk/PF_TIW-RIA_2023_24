@@ -1,0 +1,23 @@
+title Event: Folder dropped in the Trash Bin
+
+note left of User: The process is the same for deleting a document!
+User->Homepage.js: The user drags a folder into the trash bin
+Homepage.js->Homepage.js: askForDeleteConfirmation(folderID)
+
+Homepage.js->ModalWindowsFactory.js: spawnModalWindow("Are you sure you want to delete this folder?", ...)
+alt User chooses "No"
+ModalWindowsFactory.js->ModalWindowsFactory.js: removeModalWindow()
+else User chooses "Yes"
+ModalWindowsFactory.js->Folder.js: deleteFolder(folderID)
+Folder.js->apiInterface.js: doDELETE("folders/folderId", null, 200)
+apiInterface.js->FolderServlet: AJAX DELETE()
+FolderServlet->FolderDAO: deleteFolder(folderID)
+FolderDAO-->FolderServlet:
+FolderServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->Folder.js:
+Folder.js-->ModalWindowsFactory.js:
+ModalWindowsFactory.js->ModalWindowsFactory.js: removeModalWindow()
+ModalWindowsFactory.js->Homepage.js: initializeHomepage()
+Homepage.js-->User: The user now can see the updated directory structure
+
+end

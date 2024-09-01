@@ -1,0 +1,20 @@
+title Event: Homepage Load
+
+Main.js->Orchestrator.js: init()
+Orchestrator.js->Homepage.js: initializeHomepage()
+Homepage.js->Orchestrator.js: setPageTitle(...)
+Homepage.js->Orchestrator.js: setTabTitle(...)
+Homepage.js->Orchestrator.js: setPageMessage(...)
+Homepage.js->Orchestrator.js: clearActionsList(...)
+Homepage.js->Homepage.js: buildDirectoryStructure()
+Homepage.js->Folder.js: retrieveFolders()
+Folder.js->apiInterface.js: doGET("folders", null, 200)
+apiInterface.js->FoldersServlet: AJAX GET()
+FoldersServlet->FolderDAO: buildFolderTree()
+FolderDAO-->FoldersServlet: folderTree
+FoldersServlet->FoldersServlet: folderTreeJSON = gson.toJson(folderTree)
+FoldersServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->Folder.js:
+Folder.js-->Homepage.js: 
+Homepage.js->Homepage.js: foldersList = convertJSONtoHTMLElement(response)
+Homepage.js->Orchestrator.js:getPageContent().appendChild(foldersList)

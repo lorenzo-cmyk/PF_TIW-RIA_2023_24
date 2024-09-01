@@ -1,0 +1,16 @@
+title Event: Show document details
+
+
+User->ViewFolderContent.js: The user clicks on a document.
+ViewFolderContent.js->ViewDocumentDetails.js: initializeViewDocumentDetails(documentID)
+ViewDocumentDetails.js->Document.js: retrieveDocument(documentID)
+Document.js->apiInterface.js: doGET("documents/documentId", null, 200)
+apiInterface.js->DocumentServlet: AJAX GET()
+DocumentServlet->DocumentDAO: getDocumentByID(documentID)
+DocumentDAO-->DocumentServlet: foundDocument
+DocumentServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->Document.js:
+Document.js-->ViewDocumentDetails.js:
+ViewDocumentDetails.js->ViewDocumentDetails.js: documentDetails = buildDocumentDetailsFieldset(response)
+ViewDocumentDetails.js->Orchestrator.js: getPageContent().appendChild(documentDetails)
+Orchestrator.js-->User: The user now sees the document's details.

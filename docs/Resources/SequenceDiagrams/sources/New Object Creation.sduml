@@ -1,0 +1,36 @@
+title Event: Create New Folder/Subfolder/Document
+
+User->Homepage.js: Click on "Add New Folder" OR "Add New Document" OR "Add New Subfolder"
+Homepage.js->ContentManagement.js:initializeContentManagement(actionCode, folderID)
+ContentManagement.js->ContentManagement.js: buildContentManagementForm()
+ContentManagement.js->Orchestrator.js: getPageContent().appendChild(formContainer)
+Orchestrator.js-->User: The user now is able to insert the new folder name or the information regarding the new document.
+alt User creates a new folder
+ContentManagement.js->Folder.js: createFolder(folderName, parentFolderID)
+Folder.js->Validators.js: validateFolderName(folderName)
+Folder.js->Folder.js: JSONObject = JSON.stringify({folderName, parentFolderID})
+Folder.js->apiInterface.js: doPOST("folders", JSONObject, 201)
+apiInterface.js->FoldersServlet: AJAX POST(JSONObject)
+FoldersServlet->Folder: newFolder = new Folder(folderName, parentFolderID)
+Folder-->FoldersServlet: newFolder
+FoldersServlet->FolderDAO: createFolder(newFolder)
+FoldersServlet-->apiInterface.js: HTTP Response
+apiInterface.js --> Folder.js:
+Folder.js->Homepage.js: initializeHomepage()
+Homepage.js-->User: The user now sees the new folder on the homepage.
+else User creates a new document
+ContentManagement.js->Document.js: createDocument(documentName, documentType, documentSummary, parentFolderId)
+Documents.js->Validators.js: validateDocumentName(documentName)
+Documents.js->Validators.js: validateDocumentType(documentType)
+Documents.js->Validators.js: validateDocumentSummary(documentSummary)
+Documents.js->Documents.js: JSONObject = JSON.stringify({documentName, documentType, documentSummary, parentFolderId})
+Documents.js->apiInterface.js: doPOST("documents", JSONObject, 201)
+apiInterface.js->DocumentsServlet: AJAX POST(JSONObject)
+DocumentsServlet->Document: newDocument = new Document(documentName, documentType, documentSummary, parentFolderId)
+Document-->DocumentsServlet: newDocument
+DocumentsServlet->DocumentDAO: createDocument(document)
+DocumentsServlet-->apiInterface.js: HTTP Response
+apiInterface.js --> Documents.js:
+Documents.js->ViewFolderContent.js: initializeViewFolderContent(parentFolderId)
+Homepage.js-->User: The user now sees the document inside the folder
+end
