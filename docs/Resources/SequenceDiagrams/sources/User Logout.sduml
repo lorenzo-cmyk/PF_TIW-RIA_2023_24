@@ -1,0 +1,15 @@
+title Event: User Logout
+
+User->Orchestrator.js: The user clicks on the "Logout" button.
+Orchestrator.js->User.js: logoutUser()
+User.js->apiInterface.js: doDELETE("auth/logout", null, 200)
+apiInterface.js->UserDisconnectionServlet: AJAX DELETE()
+UserDisconnectionServlet->Request: getSession()
+Request-->UserDisconnectionServlet: userSession
+UserDisconnectionServlet->Session: userSession.invalidate()
+Session-->UserDisconnectionServlet:
+UserDisconnectionServlet-->apiInterface.js: HTTP Response
+apiInterface.js-->User.js:
+User.js-->Orchestrator.js:
+Orchestrator.js->Window: location.href = "authentication.html"
+Window-->User: The user is now disconnected and redirected to the login page.
