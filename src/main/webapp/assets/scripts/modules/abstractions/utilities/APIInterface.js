@@ -15,7 +15,7 @@ export default class APIInterface {
      * Constructor of the APIInterface class.
      */
     constructor() {
-        this.apiURL = "http://localhost:8080/PF_TIW_RIA_2023_24_war_exploded/api";
+        this.apiURL = "api";
     }
 
     /**
