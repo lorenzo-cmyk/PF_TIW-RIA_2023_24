@@ -165,7 +165,7 @@ export default class MoveDocumentModal {
         folderLink.draggable = false;
         // If the folder is the folder that contains the document, change its style and will not be a valid drop target.
         if (folder.folderID === parentFolderID) {
-            folderLink.style.textDecoration = "line-through"
+            folderLink.style.textDecoration = "line-through";
             folderLink.style.color = "red";
             return;
         }
@@ -228,7 +228,7 @@ export default class MoveDocumentModal {
                     }
                 }
             ]
-        )
+        );
     }
 
     /**
@@ -263,7 +263,7 @@ export default class MoveDocumentModal {
 
         // Add "dragover" event listener to the trash bin label
         trashBinLabel.addEventListener("dragover", (event) => {
-            const isValidData = event.dataTransfer.types.includes("document/id")
+            const isValidData = event.dataTransfer.types.includes("document/id");
             if (isValidData) {
                 event.preventDefault();
             }

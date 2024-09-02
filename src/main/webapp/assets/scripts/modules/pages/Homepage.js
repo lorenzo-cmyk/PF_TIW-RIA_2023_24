@@ -214,7 +214,7 @@ export default class Homepage {
 
         // Add "dragover" event listener to the trash bin label
         trashBinLabel.addEventListener("dragover", (event) => {
-            const isValidData = event.dataTransfer.types.includes("folder/id")
+            const isValidData = event.dataTransfer.types.includes("folder/id");
             if (isValidData) {
                 event.preventDefault();
             }
