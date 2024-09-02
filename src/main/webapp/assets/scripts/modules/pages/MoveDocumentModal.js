@@ -91,13 +91,18 @@ export default class MoveDocumentModal {
         const title = document.createElement('h1');
         title.innerHTML = "↩️ Drag the document on the folder where you want to move it.";
         title.className = "subtitle is-5";
+        const horizontalLine = document.createElement('hr');
         folderStructureContainer.appendChild(title);
+        folderStructureContainer.appendChild(horizontalLine);
         new Folder().retrieveFolders()
             .then((folders) => {
                 // Create the directory structure from the response.
                 const folderStructure = this.buildFolderStructure(folders, true, parentFolderID);
                 folderStructure.className = "content";
                 folderStructureContainer.appendChild(folderStructure);
+                // Create the trash bin.
+                const trashBin = this.createTrashBin(parentFolderID);
+                folderStructureContainer.appendChild(trashBin);
             })
             .catch((error) => {
                 // Set the message of the page.
@@ -224,5 +229,91 @@ export default class MoveDocumentModal {
                 }
             ]
         )
+    }
+
+    /**
+     * Method responsible for creating the trash bin.
+     * @param {int} parentFolderID The ID of the folder where the document is currently located.
+     * @returns {HTMLElement} The HTML element representing the trash bin.
+     */
+    createTrashBin(parentFolderID) {
+        // Create the trash bin container
+        const trashBinContainer = document.createElement('div');
+        // Create a horizontal rule for separation
+        const separator = document.createElement('hr');
+        trashBinContainer.appendChild(separator);
+        // Create a div for right-aligned content
+        const rightAlignedDiv = document.createElement('div');
+        rightAlignedDiv.className = "has-text-right";
+        // Create the trash bin label
+        const trashBinLabel = document.createElement('a');
+        trashBinLabel.className = "subtitle has-text-weight-medium is-6";
+        trashBinLabel.textContent = "Trash here → ";
+        trashBinLabel.draggable = false; // By default, links are draggable!
+        // Create the trash bin icon
+        const trashBinIcon = document.createElement('span');
+        trashBinIcon.className = "subtitle is-3";
+        trashBinIcon.innerHTML = "🗑️";
+        // Assemble the components
+        trashBinLabel.appendChild(trashBinIcon);
+        rightAlignedDiv.appendChild(trashBinLabel);
+        trashBinContainer.appendChild(rightAlignedDiv);
+        // Restore the pointer events to the default value.
+        trashBinLabel.style.pointerEvents = 'auto';
+
+        // Add "dragover" event listener to the trash bin label
+        trashBinLabel.addEventListener("dragover", (event) => {
+            const isValidData = event.dataTransfer.types.includes("document/id")
+            if (isValidData) {
+                event.preventDefault();
+            }
+        });
+
+        // Add "drop" event listener to the trash bin label
+        trashBinLabel.addEventListener("drop", (event) => {
+            const isValidData = event.dataTransfer.types.includes("document/id");
+            if (isValidData) {
+                event.preventDefault();
+                const documentID = event.dataTransfer.getData("document/id");
+                this.askForDeleteConfirmation(documentID, parentFolderID);
+            }
+        });
+
+        return trashBinContainer;
+    }
+
+    /**
+     * Method responsible for asking the user for a delete confirmation
+     * @param documentID The ID of the document to be deleted.
+     * @param parentFolderID The ID of the folder where the document is currently located.
+     */
+    askForDeleteConfirmation(documentID, parentFolderID) {
+        new ModalWindowsFactory().spawnModalWindow(
+            '🗑️ Delete Document',
+            '<div class="has-text-centered">Are you sure you want to delete this document?</div>',
+            [
+                {
+                    text: 'Yes',
+                    class: 'is-danger',
+                    callback: () => {
+                        new Document().deleteDocument(documentID)
+                            .then(() => {
+                                new Orchestrator().setPageMessage("message is-success",
+                                    "The document was successfully deleted.");
+                                new ViewFolderContent().initializeViewFolderContent(parentFolderID);
+                            })
+                            .catch((error) => {
+                                new Orchestrator().setPageMessage("message is-danger", error.message);
+                            });
+                    }
+                },
+                {
+                    text: 'No',
+                    class: '',
+                    callback: () => {
+                    }
+                }
+            ]
+        );
     }
 }
