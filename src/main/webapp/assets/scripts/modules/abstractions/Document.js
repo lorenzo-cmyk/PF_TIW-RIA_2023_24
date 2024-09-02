@@ -107,4 +107,23 @@ export default class Document {
             "documents/" + documentId + "/move", requestBody, 200
         );
     }
+
+    /**
+     * Method used to delete a document.
+     * @param {int} documentId The id of the document to be deleted.
+     * @returns {Promise} The promise of action to be executed.
+     */
+    async deleteDocument(documentId) {
+        // Check the validity of the document provided data.
+        if (documentId <= -1) {
+            throw new Error("The document id provided is invalid. " +
+                "Please provide a valid document id and try again.");
+        }
+
+        // Perform the request to the API.
+        return await this.apiInterface.doDELETE(
+            "documents/" + documentId, null, 200
+        );
+    }
+
 }
