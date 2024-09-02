@@ -1,3 +1,6 @@
+/**
+ * @file Authentication.js is the JavaScript entry point for the authentication.html page.
+ */
 import User from "./modules/abstractions/User.js";
 
 /**
@@ -289,6 +292,7 @@ class AuthenticationPage {
     }
 }
 
+// When the window is loaded, create an instance of the AuthenticationPage class.
 window.onload = function () {
     // Check if the user is already authenticated. If so, redirect to the index page.
     const user = new User();

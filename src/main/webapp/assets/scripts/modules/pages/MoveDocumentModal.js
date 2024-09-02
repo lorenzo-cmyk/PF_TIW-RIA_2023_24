@@ -1,16 +1,27 @@
+/**
+ * @file MoveDocumentModal.js is the file responsible for the MoveDocumentModal class.
+ * This class is responsible for creating a modal window that allows the user to move a document to another folder.
+ * The user can drag the document to the folder where he wants to move it or to the trash bin to delete it.
+ * It is exported as a module to be used in other scripts.
+ */
 import Folder from "../abstractions/Folder.js";
 import Orchestrator from "./utilities/Orchestrator.js";
 import ModalWindowsFactory from "./utilities/ModalWindowsFactory.js";
 import ViewFolderContent from "./ViewFolderContent.js";
 import Document from "../abstractions/Document.js";
 
+/**
+ * Class responsible for creating a modal window that allows the user to move a document to another folder.
+ * @class
+ */
 export default class MoveDocumentModal {
 
     moveDocumentModal = null;
 
     /**
      * Constructor of the MoveDocumentModal class.
-     * Singleton.
+     * This class is a singleton.
+     * @constructor
      */
     constructor() {
         if (!MoveDocumentModal.instance) {
