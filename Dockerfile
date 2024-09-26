@@ -1,5 +1,5 @@
 # First stage: Build the WAR file using Maven
-FROM maven:3.9.8-eclipse-temurin-21 AS builder
+FROM maven:3.9.8-eclipse-temurin-22 AS builder
 
 # Set the working directory in the container
 WORKDIR /app
