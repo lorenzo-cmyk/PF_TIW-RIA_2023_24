@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: RootPassword12!
+      MYSQL_DATABASE: DMS
+    volumes:
+      - ./src/main/resources:/docker-entrypoint-initdb.d:Z
+  webapp:
+    build:
+      context: ./
+    container_name: webapp
+    environment:
+      DB_SERVER_URL: jdbc:mysql://mysql:3306/DMS?serverTimezone=UTC
+      DB_SERVER_USER: root
+      DB_SERVER_PASSWORD: RootPassword12!
+      DB_CONNECTION_DRIVER: com.mysql.cj.jdbc.Driver
+    depends_on:
+      - mysql
+    ports:
+      - 8080:8080
+
