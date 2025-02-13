@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package
 
 # Second stage: Create the Tomcat image
-FROM tomcat:10.1.26-jdk21-temurin
+FROM tomcat:11.0.3-jdk21-temurin
 
 # Set environment variables for Tomcat
 ENV CATALINA_HOME /usr/local/tomcat
